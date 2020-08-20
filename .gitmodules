@@ -1,0 +1,3 @@
+[submodule "Core/aris-euler-state-estimation"]
+	path = Core/aris-euler-state-estimation
+	url = https://github.com/aris-space/aris-euler-state-estimation
