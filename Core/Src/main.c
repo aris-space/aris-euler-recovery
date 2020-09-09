@@ -60,6 +60,22 @@ SHT31 TEMP = SHT_INIT();
 /* USER CODE BEGIN PV */
 
 uint32_t tick;
+uint8_t raw_data1[3];
+uint8_t raw_data2[3];
+
+float p1 = 0;
+float p2 = 0;
+float t_p1 = 0;
+float t_p2 = 0;
+
+int16_t accel1_raw_buf[6];
+int16_t accel2_raw_buf[6];
+
+float accel1_val[6];
+float accel2_val[6];
+
+uint16_t t_buf[2];
+float t_val[2];
 
 /* USER CODE END PV */
 
@@ -130,23 +146,6 @@ int main(void)
   if (icm20601_init(&IMU2)) printf("setup IMU2 successful \n");
 
   sht31_init(&TEMP);
-
-  uint8_t raw_data1[3];
-  uint8_t raw_data2[3];
-
-  float p1 = 0;
-  float p2 = 0;
-  float t_p1 = 0;
-  float t_p2 = 0;
-
-  int16_t accel1_raw_buf[6];
-  int16_t accel2_raw_buf[6];
-
-  float accel1_val[6];
-  float accel2_val[6];
-
-  uint16_t t_buf[2];
-  float t_val[2];
 
   HAL_Delay(1000);
 
@@ -233,8 +232,6 @@ int main(void)
 	printf("IMU2 ax: %4.2f m/s2 \n", accel2_val[1]);
 	printf("IMU2 ay: %4.2f m/s2 \n", accel2_val[2]);
 	printf("IMU2 az: %4.2f m/s2 \n", accel2_val[3]);
-
-	HAL_Delay(1000);
 
   }
   /* USER CODE END 3 */
