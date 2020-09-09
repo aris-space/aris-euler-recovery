@@ -41,8 +41,8 @@ uint8_t ms5607_is_busy(struct ms5607_dev * dev, uint32_t interval, uint8_t stage
 	if (tick >= dev->last_call + interval){
 		if (dev->last_stage + 1 == stage){
 			dev->last_call = tick;
-			if (stage == 3){
-				dev->last_stage = 0;
+			if (stage == MS_DATA_READOUT){
+				dev->last_stage = MS_IDLE;
 			} else {
 				dev->last_stage = stage;
 			}

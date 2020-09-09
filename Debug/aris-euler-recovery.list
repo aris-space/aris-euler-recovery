@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  000201e0  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0001c54f  00000000  00000000  00020210  2**0
+ 12 .debug_info   0001c5a3  00000000  00000000  00020210  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_abbrev 000032f1  00000000  00000000  0003c75f  2**0
+ 13 .debug_abbrev 00003304  00000000  00000000  0003c7b3  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_aranges 00000f10  00000000  00000000  0003fa50  2**3
+ 14 .debug_aranges 00000f10  00000000  00000000  0003fab8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_ranges 00000da8  00000000  00000000  00040960  2**3
+ 15 .debug_ranges 00000da8  00000000  00000000  000409c8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  0002410b  00000000  00000000  00041708  2**0
+ 16 .debug_macro  0002410b  00000000  00000000  00041770  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   00010fde  00000000  00000000  00065813  2**0
+ 17 .debug_line   00010fde  00000000  00000000  0006587b  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    000c5e0c  00000000  00000000  000767f1  2**0
+ 18 .debug_str    000c5e54  00000000  00000000  00076859  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  0013c5fd  2**0
+ 19 .comment      0000007b  00000000  00000000  0013c6ad  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00004b04  00000000  00000000  0013c678  2**2
+ 20 .debug_frame  00004b04  00000000  00000000  0013c728  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -2371,7 +2371,7 @@ int main(void)
 
 
 
-	if (ms5607_is_busy(&BARO1, 3, 1) == 1)
+	if (ms5607_is_busy(&BARO1, 3, MS_TEMPERATURE_REQ) == 1)
  80016c8:	f107 03c8 	add.w	r3, r7, #200	; 0xc8
  80016cc:	2201      	movs	r2, #1
  80016ce:	2103      	movs	r1, #3
@@ -2386,7 +2386,7 @@ int main(void)
  80016e0:	4618      	mov	r0, r3
  80016e2:	f001 f8ad 	bl	8002840 <ms5607_prep_temp>
 	}
-	if (ms5607_is_busy(&BARO2, 3, 1) == 1)
+	if (ms5607_is_busy(&BARO2, 3, MS_TEMPERATURE_REQ) == 1)
  80016e6:	f107 03a0 	add.w	r3, r7, #160	; 0xa0
  80016ea:	2201      	movs	r2, #1
  80016ec:	2103      	movs	r1, #3
@@ -2405,7 +2405,7 @@ int main(void)
 
 	//HAL_Delay(5);
 
-	if (ms5607_is_busy(&BARO1, 3, 2) == 1)
+	if (ms5607_is_busy(&BARO1, 3, MS_PRESSURE_REQ) == 1)
  8001704:	f107 03c8 	add.w	r3, r7, #200	; 0xc8
  8001708:	2202      	movs	r2, #2
  800170a:	2103      	movs	r1, #3
@@ -2422,7 +2422,7 @@ int main(void)
  8001722:	4618      	mov	r0, r3
  8001724:	f001 f8a5 	bl	8002872 <ms5607_prep_pressure>
 	}
-	if (ms5607_is_busy(&BARO2, 3, 2) == 1)
+	if (ms5607_is_busy(&BARO2, 3, MS_PRESSURE_REQ) == 1)
  8001728:	f107 03a0 	add.w	r3, r7, #160	; 0xa0
  800172c:	2202      	movs	r2, #2
  800172e:	2103      	movs	r1, #3
@@ -2443,7 +2443,7 @@ int main(void)
 
 	//HAL_Delay(5);
 
-	if (ms5607_is_busy(&BARO1, 3, 3)) {
+	if (ms5607_is_busy(&BARO1, 3, MS_DATA_READOUT)) {
  800174c:	f107 03c8 	add.w	r3, r7, #200	; 0xc8
  8001750:	2203      	movs	r2, #3
  8001752:	2103      	movs	r1, #3
@@ -2465,7 +2465,7 @@ int main(void)
  800177c:	4618      	mov	r0, r3
  800177e:	f001 f907 	bl	8002990 <ms5607_convert>
 	}
-	if (ms5607_is_busy(&BARO2, 3, 3)) {
+	if (ms5607_is_busy(&BARO2, 3, MS_DATA_READOUT)) {
  8001782:	f107 03a0 	add.w	r3, r7, #160	; 0xa0
  8001786:	2203      	movs	r2, #3
  8001788:	2103      	movs	r1, #3
@@ -4870,11 +4870,11 @@ uint8_t ms5607_is_busy(struct ms5607_dev * dev, uint32_t interval, uint8_t stage
  80026d6:	68fb      	ldr	r3, [r7, #12]
  80026d8:	697a      	ldr	r2, [r7, #20]
  80026da:	621a      	str	r2, [r3, #32]
-			if (stage == 3){
+			if (stage == MS_DATA_READOUT){
  80026dc:	79fb      	ldrb	r3, [r7, #7]
  80026de:	2b03      	cmp	r3, #3
  80026e0:	d104      	bne.n	80026ec <ms5607_is_busy+0x46>
-				dev->last_stage = 0;
+				dev->last_stage = MS_IDLE;
  80026e2:	68fb      	ldr	r3, [r7, #12]
  80026e4:	2200      	movs	r2, #0
  80026e6:	f883 2024 	strb.w	r2, [r3, #36]	; 0x24

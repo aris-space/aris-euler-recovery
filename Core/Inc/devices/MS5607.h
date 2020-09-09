@@ -33,6 +33,13 @@
 	.last_call = 0, \
   }
 
+enum ms5607_stage {
+  MS_IDLE = 0,
+  MS_TEMPERATURE_REQ = 1,
+  MS_PRESSURE_REQ = 2,
+  MS_DATA_READOUT = 3,
+};
+
 // *** structs *** //
 
 typedef struct ms5607_dev {

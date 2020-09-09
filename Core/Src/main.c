@@ -128,8 +128,8 @@ int main(void)
   ms5607_init(&BARO1);
   ms5607_init(&BARO2);
 
-  if (icm20601_init(&IMU1) == 1) printf("setup IMU1 succesful \n");
-  if (icm20601_init(&IMU2) == 1) printf("setup IMU2 succesful \n");
+  if (icm20601_init(&IMU1)) printf("setup IMU1 succesful \n");
+  if (icm20601_init(&IMU2)) printf("setup IMU2 succesful \n");
 
   sht31_init(&TEMP);
 
@@ -172,7 +172,7 @@ int main(void)
 	if (LED_is_busy(&RDY)) toggle(&RDY);
 
 
-	if (sht31_is_busy(&TEMP) == 1)
+	if (sht31_is_busy(&TEMP))
 	{
 		sht31_read(&TEMP, t_val, t_buf);
 	}
@@ -188,11 +188,11 @@ int main(void)
 
 
 
-	if (ms5607_is_busy(&BARO1, 3, 1) == 1)
+	if (ms5607_is_busy(&BARO1, 3, MS_TEMPERATURE_REQ))
 	{
 		ms5607_prep_temp(&BARO1);
 	}
-	if (ms5607_is_busy(&BARO2, 3, 1) == 1)
+	if (ms5607_is_busy(&BARO2, 3, MS_TEMPERATURE_REQ))
 	{
 		ms5607_prep_temp(&BARO2);
 	}
@@ -200,11 +200,11 @@ int main(void)
 
 	//HAL_Delay(5);
 
-	if (ms5607_is_busy(&BARO1, 3, 2) == 1)
+	if (ms5607_is_busy(&BARO1, 3, MS_PRESSURE_REQ))
 	{
 		ms5607_prep_pressure(&BARO1, raw_data1);
 	}
-	if (ms5607_is_busy(&BARO2, 3, 2) == 1)
+	if (ms5607_is_busy(&BARO2, 3, MS_PRESSURE_REQ))
 	{
 		ms5607_prep_pressure(&BARO2, raw_data2);
 	}
@@ -212,11 +212,11 @@ int main(void)
 
 	//HAL_Delay(5);
 
-	if (ms5607_is_busy(&BARO1, 3, 3)) {
+	if (ms5607_is_busy(&BARO1, 3, MS_DATA_READOUT)) {
 		ms5607_read_pressure(&BARO1, raw_data1);
 		ms5607_convert(&BARO1, &p1, &t_p1);
 	}
-	if (ms5607_is_busy(&BARO2, 3, 3)) {
+	if (ms5607_is_busy(&BARO2, 3, MS_DATA_READOUT)) {
 		ms5607_read_pressure(&BARO2, raw_data2);
 		ms5607_convert(&BARO2, &p2, &t_p2);
 	}
