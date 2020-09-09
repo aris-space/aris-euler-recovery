@@ -184,6 +184,4 @@ extern void icm20601_read_temp_raw(struct icm20601_dev * dev, int16_t *temp);
 
 extern void icm20601_read_data(struct icm20601_dev * dev, float *buf);
 
-extern SPI_HandleTypeDef hspi2;
-
 #endif

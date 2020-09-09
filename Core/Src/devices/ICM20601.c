@@ -245,7 +245,7 @@ void icm20601_read_temp(struct icm20601_dev * dev, float *temp){
 	*temp = ((float)temperature_raw) / temperature_sensitivity + 25.0; // TEMP_degC = ((TEMP_OUT – RoomTemp_Offset)/Temp_Sensitivity) + 25degC
 }
 
-void icm20601_read_data(struct icm20601_dev * dev, float *buf)
+void icm20601_read_data(struct icm20601_dev * dev, float * buf)
 {
 	int16_t temperature_raw;
 	icm20601_read_temp_raw(dev, &temperature_raw);

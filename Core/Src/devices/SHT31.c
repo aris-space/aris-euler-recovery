@@ -47,60 +47,52 @@ int sht31_init(struct sht31_dev * dev)
 	}
 
 	printf("SHT31 setup success\n");
-	uint8_t _buf[2];
+	//request first measurement
+	uint8_t buf[2];
 	uint16_t REG = 0x2416;
-	_buf[0] = (uint8_t)(REG >> 8);
-	_buf[1] = (uint8_t)REG;
-	_ret = HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, _buf, 2, dev->delay);
+	buf[0] = (uint8_t)(REG >> 8);
+	buf[1] = (uint8_t)REG;
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, buf, 2, dev->delay);
 	return 1;
 }
 
-void sht31_read(struct sht31_dev * dev, float * buf, uint16_t * buf_raw)
+void sht31_read(struct sht31_dev * dev, float * dat, uint16_t * dat_raw)
 {
 
 	float temp;
 	float humid;
-	uint8_t _buf[6];
-	HAL_StatusTypeDef _ret;
+	uint8_t buf[6];
 
 	//T MSB, T LSB, T CRC, H MSB, H LSB, H CRC
-	_ret = HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, _buf, 6, dev->delay);
+	HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, buf, 6, dev->delay);
 	/*
 	uint16_t rawTemp = (uint16_t)((((uint16_t)_buf[0])<<8) | (uint16_t)_buf[1]);
 	uint16_t rawHum = (uint16_t)((((uint16_t)_buf[3])<<8) | (uint16_t)_buf[4]);
 	*/
-	uint16_t rawTemp = ((uint16_t)_buf[0] << 8) | _buf[1];
-	uint16_t rawHum = ((uint16_t)_buf[3] << 8) | _buf[4];
+	uint16_t rawTemp = ((uint16_t)buf[0] << 8) | buf[1];
+	uint16_t rawHum = ((uint16_t)buf[3] << 8) | buf[4];
 	humid = 100.0 * (float)rawHum / 65535.0;
 	temp = -45.0 + 175 * (float)rawTemp / 65535.0;
 	//printf("temperature is %4.2f deg\n",temp);
 	//printf("humidity is %4.2f perc\n",humid);
-	buf[0] = temp;
-	buf[1] = humid;
-	buf_raw[0] = rawTemp;
-	buf_raw[1] = rawHum;
+	dat[0] = temp;
+	dat[1] = humid;
+	dat_raw[0] = rawTemp;
+	dat_raw[1] = rawHum;
 
 	uint16_t REG = 0x2416;
-	_buf[0] = (uint8_t)(REG >> 8);
-	_buf[1] = (uint8_t)REG;
-	_ret = HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, _buf, 2, dev->delay);
-	if ( _ret != HAL_OK )
-	{
-		//printf("SHT31 read fail\n");
-		//printf("error code: %d \n",_ret);
-	}
+	buf[0] = (uint8_t)(REG >> 8);
+	buf[1] = (uint8_t)REG;
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, buf, 2, dev->delay);
+
 };
 void write(struct sht31_dev * dev, uint8_t REG, uint8_t val)
 {
-	uint8_t _buf[2];
-	_buf[0] = REG;
-	_buf[1] = val;
-	HAL_StatusTypeDef _ret;
+	uint8_t buf[2];
+	buf[0] = REG;
+	buf[1] = val;
 
-	_ret = HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, _buf, 2, dev->delay);
-	if ( _ret != HAL_OK )
-	{
-		//printf("SHT31 write fail\n");
-	}
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, buf, 2, dev->delay);
+
 };
 

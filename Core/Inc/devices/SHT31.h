@@ -25,14 +25,13 @@ typedef struct sht31_dev {
 	uint8_t addr;
 	I2C_HandleTypeDef* i2c_bus;
 	uint8_t delay;
-	uint16_t buf[2];
 	uint32_t last_call;
 } SHT31;
 
 uint8_t sht31_is_busy(struct sht31_dev * dev);
 
 int sht31_init(struct sht31_dev * dev);
-void sht31_read(struct sht31_dev * dev, float * buf, uint16_t * buf_raw);
+void sht31_read(struct sht31_dev * dev, float * dat, uint16_t * dat_raw);
 
 void write(struct sht31_dev * dev, uint8_t REG, uint8_t val);
 

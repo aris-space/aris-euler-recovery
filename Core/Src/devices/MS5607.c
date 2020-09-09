@@ -110,9 +110,8 @@ void ms5607_prep_temp(struct ms5607_dev * dev)
 {
 	uint8_t buf[3];
 	buf[0] = 0x44;
-	HAL_StatusTypeDef _ret;
 
-	_ret = HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, buf, 1, dev->delay);
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, buf, 1, dev->delay);
 	// need to wait 3 ms
 }
 
@@ -120,10 +119,9 @@ void ms5607_prep_pressure(struct ms5607_dev * dev, uint8_t * dat)
 {
 	uint8_t buf[3];
 	buf[0] = 0x00;
-	HAL_StatusTypeDef _ret;
 
-	_ret = HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, buf, 1, dev->delay);
-	_ret = HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, buf, 3, dev->delay);
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, buf, 1, dev->delay);
+	HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, buf, 3, dev->delay);
 
 	dev->D1 = (uint32_t)(buf[0] << 16) | (uint32_t)(buf[1] << 8) | (uint32_t)buf[2];
 	dat[0] = buf[0];
@@ -131,7 +129,7 @@ void ms5607_prep_pressure(struct ms5607_dev * dev, uint8_t * dat)
 	dat[2] = buf[2];
 
 	buf[0] = 0x54;
-	_ret = HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, buf, 1, dev->delay);
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, buf, 1, dev->delay);
 	// need to wait 3 ms
 }
 
@@ -139,10 +137,9 @@ void ms5607_read_pressure(struct ms5607_dev * dev, uint8_t * dat)
 {
 	uint8_t buf[3];
 	buf[0] = 0x00;
-	HAL_StatusTypeDef _ret;
 
-	_ret = HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, buf, 1, dev->delay);
-	_ret = HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, buf, 3, dev->delay);
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, buf, 1, dev->delay);
+	HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, buf, 3, dev->delay);
 
 	dev->D2 = (uint32_t)(buf[0] << 16) | (uint32_t)(buf[1] << 8) | (uint32_t)buf[2];
 	dat[3] = buf[0];

@@ -41,7 +41,18 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
+LED STAT = STAT_INIT();
+LED SAVE = SAVE_INIT();
+LED PRGM = PRGM_INIT();
+LED RDY = RDY_INIT();
 
+MS5607 BARO1 = BARO1_INIT();
+MS5607 BARO2 = BARO2_INIT();
+
+ICM20601 IMU1 = IMU1_INIT();
+ICM20601 IMU2 = IMU2_INIT();
+
+SHT31 TEMP = SHT_INIT();
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -80,19 +91,6 @@ int main(void)
 
   /* USER CODE BEGIN Init */
 
-  LED STAT = STAT_INIT();
-  LED SAVE = SAVE_INIT();
-  LED PRGM = PRGM_INIT();
-  LED RDY = RDY_INIT();
-
-  MS5607 BARO1 = BARO1_INIT();
-  MS5607 BARO2 = BARO2_INIT();
-
-  ICM20601 IMU1 = IMU1_INIT();
-  ICM20601 IMU2 = IMU2_INIT();
-
-  SHT31 TEMP = SHT_INIT();
-
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -128,8 +126,8 @@ int main(void)
   ms5607_init(&BARO1);
   ms5607_init(&BARO2);
 
-  if (icm20601_init(&IMU1)) printf("setup IMU1 succesful \n");
-  if (icm20601_init(&IMU2)) printf("setup IMU2 succesful \n");
+  if (icm20601_init(&IMU1)) printf("setup IMU1 successful \n");
+  if (icm20601_init(&IMU2)) printf("setup IMU2 successful \n");
 
   sht31_init(&TEMP);
 

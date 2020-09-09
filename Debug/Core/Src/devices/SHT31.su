@@ -1,4 +1,4 @@
 SHT31.c:19:9:sht31_is_busy	24	static
 SHT31.c:30:5:sht31_init	32	static
-SHT31.c:58:6:sht31_read	64	static
-SHT31.c:93:6:write	32	static
+SHT31.c:59:6:sht31_read	64	static
+SHT31.c:89:6:write	32	static
