@@ -1,0 +1,5 @@
+H3L.c:26:5:H3L_INIT	24	static
+H3L.c:67:6:H3L_read_raw	32	static
+H3L.c:115:6:H3L_convert	32	static
+H3L.c:135:6:H3L_read	48	static
+H3L.c:198:6:H3L_write	32	static

@@ -1,0 +1,13 @@
+ICM20601.c:26:7:_get_accel_sensitivity	24	static
+ICM20601.c:47:7:_get_gyro_sensitivity	24	static
+ICM20601.c:67:9:_compareArrays	32	static
+ICM20601.c:75:6:_icm_read_bytes	24	static
+ICM20601.c:84:6:_icm_write_bytes	24	static
+ICM20601.c:95:8:icm20601_init	24	static
+ICM20601.c:185:6:icm20601_read_accel_raw	24	static
+ICM20601.c:195:6:icm20601_read_accel	32	static
+ICM20601.c:209:6:icm20601_read_gyro_raw	24	static
+ICM20601.c:219:6:icm20601_read_gyro	32	static
+ICM20601.c:233:6:icm20601_read_temp_raw	24	static
+ICM20601.c:241:6:icm20601_read_temp	24	static
+ICM20601.c:248:6:icm20601_read_data	48	static

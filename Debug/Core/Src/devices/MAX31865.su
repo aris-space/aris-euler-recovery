@@ -1,0 +1,15 @@
+MAX31865.c:41:6:Max31865_readRegisterN	40	static
+MAX31865.c:56:9:Max31865_readRegister8	24	static
+MAX31865.c:63:10:Max31865_readRegister16	24	static
+MAX31865.c:73:6:Max31865_writeRegister8	16	static
+MAX31865.c:82:9:Max31865_readFault	16	static
+MAX31865.c:87:6:Max31865_clearFault	24	static
+MAX31865.c:95:6:Max31865_enableBias	24	static
+MAX31865.c:105:6:Max31865_autoConvert	24	static
+MAX31865.c:115:6:Max31865_setWires	24	static
+MAX31865.c:125:6:Max31865_setFilter	24	static
+MAX31865.c:135:10:Max31865_readRTD	24	static
+MAX31865.c:152:7:Max31865_init	24	static
+MAX31865.c:166:6:Max31865_readTempC	56	static
+MAX31865.c:207:7:Max31865_readTempF	24	static
+MAX31865.c:214:7:Max31865_Filter	24	static

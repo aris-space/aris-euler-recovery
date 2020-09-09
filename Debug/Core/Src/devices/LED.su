@@ -1,0 +1,4 @@
+LED.c:10:9:LED_is_busy	24	static
+LED.c:20:6:toggle	16	static
+LED.c:24:6:turn_on	16	static
+LED.c:28:6:turn_off	16	static

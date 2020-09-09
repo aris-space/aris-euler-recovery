@@ -29,9 +29,18 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "devices/LED.h"
+#include "devices/MS5607.h"
+#include "devices/ICM20601.h"
+#include "devices/SHT31.h"
+#include "devices/H3L.h"
+#include <stdio.h>
+
+//#include "tasks/task_state_est.h"
 
 /* USER CODE END Includes */
 
@@ -48,6 +57,10 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 
+#define FREQ_1 333
+#define FREQ_2 500
+#define FREQ_3 1000
+
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -58,6 +71,40 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define PWR_DTCT_Pin GPIO_PIN_3
+#define PWR_DTCT_GPIO_Port GPIOE
+#define SW_Pin GPIO_PIN_15
+#define SW_GPIO_Port GPIOC
+#define SPI1_CS_Pin GPIO_PIN_4
+#define SPI1_CS_GPIO_Port GPIOA
+#define BUZ_Pin GPIO_PIN_5
+#define BUZ_GPIO_Port GPIOC
+#define CS_MEM_Pin GPIO_PIN_7
+#define CS_MEM_GPIO_Port GPIOE
+#define TD1_Pin GPIO_PIN_8
+#define TD1_GPIO_Port GPIOE
+#define TD2_Pin GPIO_PIN_9
+#define TD2_GPIO_Port GPIOE
+#define HAWK1_Pin GPIO_PIN_10
+#define HAWK1_GPIO_Port GPIOE
+#define HAWK2_Pin GPIO_PIN_11
+#define HAWK2_GPIO_Port GPIOE
+#define RDY_Pin GPIO_PIN_12
+#define RDY_GPIO_Port GPIOE
+#define STAT_Pin GPIO_PIN_13
+#define STAT_GPIO_Port GPIOE
+#define SAVE_Pin GPIO_PIN_14
+#define SAVE_GPIO_Port GPIOE
+#define PRGM_Pin GPIO_PIN_15
+#define PRGM_GPIO_Port GPIOE
+#define SPI2_CS_Pin GPIO_PIN_12
+#define SPI2_CS_GPIO_Port GPIOB
+#define SD_DTCT_Pin GPIO_PIN_0
+#define SD_DTCT_GPIO_Port GPIOD
+#define SENSE_Pin GPIO_PIN_4
+#define SENSE_GPIO_Port GPIOB
+#define STAY_ALIVE_Pin GPIO_PIN_5
+#define STAY_ALIVE_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
