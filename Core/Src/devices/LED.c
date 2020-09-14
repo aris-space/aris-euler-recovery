@@ -7,16 +7,6 @@
 
 #include "devices/LED.h"
 
-uint8_t LED_is_busy(struct LED_dev * dev){
-	uint32_t tick;
-	tick = HAL_GetTick();
-	if (tick > dev->last_call + dev->interval){
-		dev->last_call = tick;
-		return 1;
-	}
-	return 0;
-}
-
 void toggle(struct LED_dev * ctrl){
 	HAL_GPIO_TogglePin(ctrl->LED_port, ctrl->LED_pin);
 }

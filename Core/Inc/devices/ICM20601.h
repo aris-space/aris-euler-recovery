@@ -7,7 +7,6 @@
 #define _ICM20602_H
 
 #include "main.h"
-
 // *** Macros *** //
 
 #define IMU1_INIT() \

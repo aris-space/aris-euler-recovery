@@ -34,24 +34,6 @@
 #include <devices/MS5607.h>
 
 
-
-uint8_t ms5607_is_busy(struct ms5607_dev * dev, uint32_t interval, uint8_t stage){
-	uint32_t tick;
-	tick = HAL_GetTick();
-	if (tick >= dev->last_call + interval){
-		if (dev->last_stage + 1 == stage){
-			dev->last_call = tick;
-			if (stage == MS_DATA_READOUT){
-				dev->last_stage = MS_IDLE;
-			} else {
-				dev->last_stage = stage;
-			}
-			return 1;
-		}
-	}
-	return 0;
-}
-
 uint8_t ms5607_init(struct ms5607_dev * dev)
 {
 	if (HAL_I2C_GetState(dev->i2c_bus) != HAL_I2C_STATE_READY)

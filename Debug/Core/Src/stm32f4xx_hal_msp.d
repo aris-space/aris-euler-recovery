@@ -31,9 +31,11 @@ Core/Src/stm32f4xx_hal_msp.o: ../Core/Src/stm32f4xx_hal_msp.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sd.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_sdmmc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
- ../Core/Inc/devices/LED.h ../Core/Inc/devices/MS5607.h ../Core/Inc/i2c.h \
- ../Core/Inc/main.h ../Core/Inc/gpio.h ../Core/Inc/devices/ICM20601.h \
- ../Core/Inc/devices/SHT31.h ../Core/Inc/devices/H3L.h
+ ../Core/Inc/devices/LED.h ../Core/Inc/devices/MS5607.h \
+ ../Core/Inc/devices/ICM20601.h ../Core/Inc/devices/SHT31.h \
+ ../Core/Inc/devices/H3L.h ../Core/Inc/IO.h ../Core/Inc/main.h \
+ ../Core/Inc/selftest.h ../Core/Inc/manager.h ../Core/Inc/spi.h \
+ ../Core/Inc/i2c.h ../Core/Inc/gpio.h
 
 ../Core/Inc/main.h:
 
@@ -105,14 +107,22 @@ Core/Src/stm32f4xx_hal_msp.o: ../Core/Src/stm32f4xx_hal_msp.c \
 
 ../Core/Inc/devices/MS5607.h:
 
-../Core/Inc/i2c.h:
-
-../Core/Inc/main.h:
-
-../Core/Inc/gpio.h:
-
 ../Core/Inc/devices/ICM20601.h:
 
 ../Core/Inc/devices/SHT31.h:
 
 ../Core/Inc/devices/H3L.h:
+
+../Core/Inc/IO.h:
+
+../Core/Inc/main.h:
+
+../Core/Inc/selftest.h:
+
+../Core/Inc/manager.h:
+
+../Core/Inc/spi.h:
+
+../Core/Inc/i2c.h:
+
+../Core/Inc/gpio.h:

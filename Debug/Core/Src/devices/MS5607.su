@@ -1,6 +1,5 @@
-MS5607.c:38:9:ms5607_is_busy	32	static
-MS5607.c:55:9:ms5607_init	40	static
-MS5607.c:109:6:ms5607_prep_temp	32	static
-MS5607.c:118:6:ms5607_prep_pressure	32	static
-MS5607.c:136:6:ms5607_read_pressure	32	static
-MS5607.c:150:6:ms5607_convert	96	static
+MS5607.c:37:9:ms5607_init	40	static
+MS5607.c:91:6:ms5607_prep_temp	32	static
+MS5607.c:100:6:ms5607_prep_pressure	32	static
+MS5607.c:118:6:ms5607_read_pressure	32	static
+MS5607.c:132:6:ms5607_convert	96	static

@@ -1,0 +1,4 @@
+IO.c:10:6:fire_HAWKs	8	static
+IO.c:15:6:turn_off_HAWKs	8	static
+IO.c:20:6:fire_TDs	8	static
+IO.c:25:6:turn_off_TDs	8	static

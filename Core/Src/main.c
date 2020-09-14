@@ -41,41 +41,13 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-LED STAT = STAT_INIT();
-LED SAVE = SAVE_INIT();
-LED PRGM = PRGM_INIT();
-LED RDY = RDY_INIT();
 
-MS5607 BARO1 = BARO1_INIT();
-MS5607 BARO2 = BARO2_INIT();
-
-ICM20601 IMU1 = IMU1_INIT();
-ICM20601 IMU2 = IMU2_INIT();
-
-SHT31 TEMP = SHT_INIT();
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
 
-uint32_t tick;
-uint8_t raw_data1[3];
-uint8_t raw_data2[3];
-
-float p1 = 0;
-float p2 = 0;
-float t_p1 = 0;
-float t_p2 = 0;
-
-int16_t accel1_raw_buf[6];
-int16_t accel2_raw_buf[6];
-
-float accel1_val[6];
-float accel2_val[6];
-
-uint16_t t_buf[2];
-float t_val[2];
 
 /* USER CODE END PV */
 
@@ -126,26 +98,9 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
-  turn_on(&STAT);
-  HAL_Delay(300);
-  turn_on(&SAVE);
-  HAL_Delay(300);
-  turn_on(&PRGM);
-  HAL_Delay(300);
+  turn_off_HAWKs();
 
-  turn_off(&STAT);
-  turn_off(&SAVE);
-  turn_off(&PRGM);
-  HAL_Delay(1000);
-
-
-  ms5607_init(&BARO1);
-  ms5607_init(&BARO2);
-
-  if (icm20601_init(&IMU1)) printf("setup IMU1 successful \n");
-  if (icm20601_init(&IMU2)) printf("setup IMU2 successful \n");
-
-  sht31_init(&TEMP);
+  schedulerinit();
 
   HAL_Delay(1000);
 
@@ -158,81 +113,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	tick = HAL_GetTick();
-
-	if (LED_is_busy(&STAT)) toggle(&STAT);
-
-	if (LED_is_busy(&SAVE)) toggle(&SAVE);
-
-	if (LED_is_busy(&PRGM)) toggle(&PRGM);
-
-	if (LED_is_busy(&RDY)) toggle(&RDY);
-
-
-	if (sht31_is_busy(&TEMP))
-	{
-		sht31_read(&TEMP, t_val, t_buf);
-	}
-
-
-	//icm20601_read_data_raw(&IMU1, accel1_raw_buf);
-	//icm20601_convert_data(&IMU1, accel1_val, accel1_raw_buf);
-	icm20601_read_data(&IMU1, accel1_val);
-
-	//icm20601_read_data_raw(&IMU2, accel2_raw_buf);
-	//icm20601_convert_data(&IMU2, accel2_val, accel2_raw_buf);
-	icm20601_read_data(&IMU2, accel2_val);
-
-
-
-	if (ms5607_is_busy(&BARO1, 3, MS_TEMPERATURE_REQ))
-	{
-		ms5607_prep_temp(&BARO1);
-	}
-	if (ms5607_is_busy(&BARO2, 3, MS_TEMPERATURE_REQ))
-	{
-		ms5607_prep_temp(&BARO2);
-	}
-	//delay 3ms
-
-	//HAL_Delay(5);
-
-	if (ms5607_is_busy(&BARO1, 3, MS_PRESSURE_REQ))
-	{
-		ms5607_prep_pressure(&BARO1, raw_data1);
-	}
-	if (ms5607_is_busy(&BARO2, 3, MS_PRESSURE_REQ))
-	{
-		ms5607_prep_pressure(&BARO2, raw_data2);
-	}
-	//delay 3ms
-
-	//HAL_Delay(5);
-
-	if (ms5607_is_busy(&BARO1, 3, MS_DATA_READOUT)) {
-		ms5607_read_pressure(&BARO1, raw_data1);
-		ms5607_convert(&BARO1, &p1, &t_p1);
-	}
-	if (ms5607_is_busy(&BARO2, 3, MS_DATA_READOUT)) {
-		ms5607_read_pressure(&BARO2, raw_data2);
-		ms5607_convert(&BARO2, &p2, &t_p2);
-	}
-
-
-
-
-	printf("p1 = %4.2f bar and t1 = %4.2f C \n",p1,t_p1);
-	printf("p2 = %4.2f bar and t2 = %4.2f C \n",p2,t_p2);
-	printf("T = %4.2f C and H = %4.2f perc \n",t_val[0],t_val[1]);
-	printf("IMU1 T: %4.2f C \n", accel1_val[0]);
-	printf("IMU1 ax: %4.2f m/s2 \n", accel1_val[1]);
-	printf("IMU1 ay: %4.2f m/s2 \n", accel1_val[2]);
-	printf("IMU1 az: %4.2f m/s2 \n", accel1_val[3]);
-	printf("IMU2 T: %4.2f C \n", accel2_val[0]);
-	printf("IMU2 ax: %4.2f m/s2 \n", accel2_val[1]);
-	printf("IMU2 ay: %4.2f m/s2 \n", accel2_val[2]);
-	printf("IMU2 az: %4.2f m/s2 \n", accel2_val[3]);
-
+	scheduler();
   }
   /* USER CODE END 3 */
 }
