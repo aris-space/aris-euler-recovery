@@ -74,7 +74,7 @@ uint8_t ms5607_init(struct ms5607_dev * dev)
 
 		_ret = HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, &get_add, 1, dev->delay);
 		HAL_Delay(15);
-		_ret = HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, buf, 1, dev->delay);
+		_ret = HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, buf, 2, dev->delay);
 		dev->cal[i-1] = (uint16_t)(buf[0] << 8) | buf[1];
 
 		if ( _ret != HAL_OK )

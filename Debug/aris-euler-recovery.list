@@ -4877,7 +4877,7 @@ uint8_t ms5607_init(struct ms5607_dev * dev)
 		HAL_Delay(15);
  8002644:	200f      	movs	r0, #15
  8002646:	f000 fcd5 	bl	8002ff4 <HAL_Delay>
-		_ret = HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, buf, 1, dev->delay);
+		_ret = HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, buf, 2, dev->delay);
  800264a:	687b      	ldr	r3, [r7, #4]
  800264c:	6858      	ldr	r0, [r3, #4]
  800264e:	687b      	ldr	r3, [r7, #4]
@@ -4887,7 +4887,7 @@ uint8_t ms5607_init(struct ms5607_dev * dev)
  8002656:	7a1b      	ldrb	r3, [r3, #8]
  8002658:	f107 020c 	add.w	r2, r7, #12
  800265c:	9300      	str	r3, [sp, #0]
- 800265e:	2301      	movs	r3, #1
+ 800265e:	2302      	movs	r3, #2
  8002660:	f001 fc36 	bl	8003ed0 <HAL_I2C_Master_Receive>
  8002664:	4603      	mov	r3, r0
  8002666:	74fb      	strb	r3, [r7, #19]
