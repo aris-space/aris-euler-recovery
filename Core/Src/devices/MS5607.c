@@ -63,16 +63,16 @@ uint8_t ms5607_init(struct ms5607_dev * dev)
 	//6 calibration values with each having 2 bytes
 
 	//get each calibration value (c1 - c6 in datasheet)
-	uint8_t get_add[1];
+	uint8_t get_add;
 	uint8_t buf[2];
 
 	for(int i = 1; i < 7; i++){
 
 		//standard commands (see datasheet)
-		get_add[0] = 0b10100000;
-		get_add[0] = get_add[0] + 2*i;
+		get_add = 0b10100000;
+		get_add = get_add + 2*i;
 
-		_ret = HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, get_add, 1, dev->delay);
+		_ret = HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, &get_add, 1, dev->delay);
 		HAL_Delay(15);
 		_ret = HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, buf, 1, dev->delay);
 		dev->cal[i-1] = (uint16_t)(buf[0] << 8) | buf[1];
@@ -85,16 +85,11 @@ uint8_t ms5607_init(struct ms5607_dev * dev)
 
 
 	printf("BARO setup success\n");
-	return 1;
-}
 
-void ms5607_prep_temp(struct ms5607_dev * dev)
-{
-	uint8_t buf[3];
 	buf[0] = 0x44;
-
 	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, buf, 1, dev->delay);
 	// need to wait 3 ms
+	return 1;
 }
 
 void ms5607_prep_pressure(struct ms5607_dev * dev, uint8_t * dat)
@@ -127,6 +122,10 @@ void ms5607_read_pressure(struct ms5607_dev * dev, uint8_t * dat)
 	dat[3] = buf[0];
 	dat[4] = buf[1];
 	dat[5] = buf[2];
+
+	buf[0] = 0x44;
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, buf, 1, dev->delay);
+	// need to wait 3 ms
 }
 
 void ms5607_convert(struct ms5607_dev * dev, float * p, float * t)

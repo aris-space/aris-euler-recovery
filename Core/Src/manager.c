@@ -104,21 +104,16 @@ void scheduler (){
 
 		switch(BARO_TASK.stage){
 			case MS_TEMPERATURE_REQ:
-				ms5607_prep_temp(&BARO1);
-				ms5607_prep_temp(&BARO2);
+				ms5607_prep_pressure(&BARO1, raw_data1);
+				ms5607_prep_pressure(&BARO2, raw_data2);
 				BARO_TASK.last_call = HAL_GetTick();
 				BARO_TASK.stage = MS_PRESSURE_REQ;
 				break;
 			case MS_PRESSURE_REQ:
-				ms5607_prep_pressure(&BARO1, raw_data1);
-				ms5607_prep_pressure(&BARO2, raw_data2);
-				BARO_TASK.last_call = HAL_GetTick();
-				BARO_TASK.stage = MS_DATA_READOUT;
-				break;
-			case MS_DATA_READOUT:
 				ms5607_read_pressure(&BARO1, raw_data1);
-				ms5607_convert(&BARO1, &p1, &t_p1);
 				ms5607_read_pressure(&BARO2, raw_data2);
+				BARO_TASK.last_call = HAL_GetTick();
+				ms5607_convert(&BARO1, &p1, &t_p1);
 				ms5607_convert(&BARO2, &p2, &t_p2);
 				BARO_TASK.stage = MS_TEMPERATURE_REQ;
 				break;

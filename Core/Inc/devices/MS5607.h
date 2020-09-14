@@ -28,7 +28,6 @@
 enum ms5607_stage {
   MS_TEMPERATURE_REQ = 0,
   MS_PRESSURE_REQ = 1,
-  MS_DATA_READOUT = 2,
 };
 
 // *** structs *** //
@@ -45,7 +44,6 @@ typedef struct ms5607_dev {
 } MS5607;
 
 extern uint8_t ms5607_init(struct ms5607_dev * dev);
-extern void ms5607_prep_temp(struct ms5607_dev * dev);
 extern void ms5607_prep_pressure(struct ms5607_dev * dev, uint8_t * dat);
 extern void ms5607_read_pressure(struct ms5607_dev * dev, uint8_t * dat);
 extern void ms5607_convert(struct ms5607_dev * dev, float * p, float * t);
