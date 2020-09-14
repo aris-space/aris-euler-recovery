@@ -38,9 +38,9 @@ uint8_t ms5607_init(struct ms5607_dev * dev)
 {
 	if (HAL_I2C_GetState(dev->i2c_bus) != HAL_I2C_STATE_READY)
 	{
-		printf("i2c1 not ready!\n");
+		printf("i2c not ready!\n");
 	} else {
-		printf("i2c1 is ready!\n");
+		printf("i2c is ready!\n");
 	}
 	HAL_StatusTypeDef _ret;
 	_ret = HAL_I2C_IsDeviceReady(dev->i2c_bus, dev->addr, 10, dev->addr);

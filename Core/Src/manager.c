@@ -51,11 +51,23 @@ float t_val[2];
 
 
 void schedulerinit () {
-	  ms5607_init(&BARO1);
-	  ms5607_init(&BARO2);
-	  sht31_init(&TEMP);
-	  icm20601_init(&IMU1);
-	  icm20601_init(&IMU2);
+	ms5607_init(&BARO1);
+	ms5607_init(&BARO2);
+	sht31_init(&TEMP);
+	icm20601_init(&IMU1);
+	icm20601_init(&IMU2);
+
+	turn_on(&STAT);
+	HAL_Delay(300);
+	turn_on(&SAVE);
+	HAL_Delay(300);
+	turn_on(&PRGM);
+	HAL_Delay(300);
+
+	turn_off(&STAT);
+	turn_off(&SAVE);
+	turn_off(&PRGM);
+	HAL_Delay(1000);
 }
 
 void scheduler (){
@@ -125,10 +137,17 @@ void scheduler (){
 		//icm20601_convert_data(&IMU2, accel2_val, accel2_raw_buf);
 		icm20601_read_data(&IMU2, accel2_val);
 	}
+
+	// TASK SHOCK ACCEL
+	// .........
+
+	// TASK ADC
+	// .........
+
+
 	// TASK LOGGING
 	// .........
-	// TASK IMU
-	// .........
+
 
 
 	printf("tick: %ld \n",tick);

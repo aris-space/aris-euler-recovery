@@ -20,7 +20,7 @@
   { \
 	.last_call = 0, \
 	.stage = 0, \
-	.duration = BARO, \
+	.interval = BARO, \
   }
 
 // SHT TASK
@@ -28,7 +28,7 @@
   { \
 	.last_call = 0, \
 	.stage = 0, \
-	.duration = SHT, \
+	.interval = SHT, \
   }
 
 // IMU TASK
@@ -36,7 +36,7 @@
   { \
 	.last_call = 0, \
 	.stage = 0, \
-	.duration = IMU, \
+	.interval = IMU, \
   }
 
 // LED TASKS
@@ -44,25 +44,25 @@
   { \
 	.last_call = 0, \
 	.stage = 0, \
-	.duration = 333, \
+	.interval = 333, \
   }
 #define STAT_TASK_INIT() \
   { \
 	.last_call = 0, \
 	.stage = 0, \
-	.duration = 1000, \
+	.interval = 1000, \
   }
 #define SAVE_TASK_INIT() \
   { \
 	.last_call = 0, \
 	.stage = 0, \
-	.duration = 500, \
+	.interval = 500, \
   }
 #define PRGM_TASK_INIT() \
   { \
 	.last_call = 0, \
 	.stage = 0, \
-	.duration = 100, \
+	.interval = 100, \
   }
 
 typedef struct {
