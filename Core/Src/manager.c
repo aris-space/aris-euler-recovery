@@ -13,6 +13,15 @@
 #include "devices/SHT31.h"
 #include "devices/H3L.h"
 
+
+#include "IO.h"
+#include "SD.h"
+#include "selftest.h"
+
+#include <string.h>
+#include <stdio.h>
+#include <math.h>
+
 task_t BARO_TASK = BARO_TASK_INIT();
 task_t SHT_TASK = SHT_TASK_INIT();
 task_t IMU_TASK = IMU_TASK_INIT();
@@ -69,6 +78,9 @@ float adc_dat[8];
 
 char buffer[BUFLEN]; // to store data
 
+uint16_t num_dat_file = 0;
+uint16_t num_log_file = 0;
+uint8_t SD_state = 0;
 
 void schedulerinit () {
 	ms5607_init(&BARO1);
@@ -77,6 +89,7 @@ void schedulerinit () {
 	icm20601_init(&IMU1);
 	icm20601_init(&IMU2);
 	h3l_init(&ACCEL);
+	init_ADC();
 
 	turn_on(&STAT);
 	HAL_Delay(300);
@@ -88,7 +101,14 @@ void schedulerinit () {
 	turn_off(&STAT);
 	turn_off(&SAVE);
 	turn_off(&PRGM);
+
+	SD_state = init_sd(&num_dat_file, &num_log_file);
+	if (SD_state == 1){
+		turn_on(&SAVE);
+	}
+
 	HAL_Delay(1000);
+
 }
 
 void scheduler (){
@@ -166,6 +186,14 @@ void scheduler (){
 	if(tick >= getNextExecution(&ADC_TASK)){
 		ADC_TASK.last_call = HAL_GetTick();
 		read_ADC(adc_dat);
+		printf("1 %4.2f V \n", adc_dat[0]);
+		printf("2 %4.2f V \n", adc_dat[1]);
+		printf("3 %4.2f V \n", adc_dat[2]);
+		printf("4 %4.2f V \n", adc_dat[3]);
+		printf("5 %4.2f V \n", adc_dat[4]);
+		printf("6 %4.2f V \n", adc_dat[5]);
+		printf("7 %4.2f V \n", adc_dat[6]);
+		printf("8 %4.2f C \n", adc_dat[7]);
 	}
 
 	// TASK STATE ESTIMATION

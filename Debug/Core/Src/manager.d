@@ -34,7 +34,8 @@ Core/Src/manager.o: ../Core/Src/manager.c ../Core/Inc/manager.h \
  ../Core/Inc/main.h ../Core/Inc/devices/LED.h \
  ../Core/Inc/devices/MS5607.h ../Core/Inc/i2c.h \
  ../Core/Inc/devices/ICM20601.h ../Core/Inc/spi.h \
- ../Core/Inc/devices/SHT31.h ../Core/Inc/devices/H3L.h
+ ../Core/Inc/devices/SHT31.h ../Core/Inc/devices/H3L.h ../Core/Inc/IO.h \
+ ../Core/Inc/SD.h ../Core/Inc/selftest.h
 
 ../Core/Inc/manager.h:
 
@@ -119,3 +120,9 @@ Core/Src/manager.o: ../Core/Src/manager.c ../Core/Inc/manager.h \
 ../Core/Inc/devices/SHT31.h:
 
 ../Core/Inc/devices/H3L.h:
+
+../Core/Inc/IO.h:
+
+../Core/Inc/SD.h:
+
+../Core/Inc/selftest.h:

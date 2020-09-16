@@ -31,8 +31,6 @@
 /* USER CODE BEGIN Includes */
 
 #include "IO.h"
-#include "SD.h"
-#include "selftest.h"
 #include "manager.h"
 
 #include <string.h>

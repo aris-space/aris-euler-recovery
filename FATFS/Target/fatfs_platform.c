@@ -26,11 +26,13 @@ uint8_t	BSP_PlatformIsDetected(void) {
     }
     /* USER CODE BEGIN 1 */
     /* user code can be inserted here */
-    if (status == SD_NOT_PRESENT){
-    	status = SD_PRESENT;
-    } else {
-    	status = SD_NOT_PRESENT;
-    }
+//    if (status == SD_NOT_PRESENT){
+//    	status = SD_PRESENT;
+//    } else {
+//    	status = SD_NOT_PRESENT;
+//    }
+   	status = SD_PRESENT;
+
     /* USER CODE END 1 */
     return status;
 }
