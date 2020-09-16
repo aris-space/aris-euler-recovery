@@ -16,6 +16,7 @@
 #define IMU 0
 #define ACC 0
 #define ADC_INT 20
+#define LOG_INT 0
 
 // BARO TASK
 #define BARO_TASK_INIT() \
@@ -55,6 +56,14 @@
 	.last_call = 0, \
 	.stage = 0, \
 	.interval = ADC_INT, \
+  }
+
+// LOGGING TASK
+#define LOG_TASK_INIT() \
+  { \
+	.last_call = 0, \
+	.stage = 0, \
+	.interval = LOG_INT, \
   }
 
 // LED TASKS

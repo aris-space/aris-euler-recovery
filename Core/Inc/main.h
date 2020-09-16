@@ -52,7 +52,7 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 
-#define DEBUG_PRINT 1
+#define DEBUG_PRINT 0
 
 /* USER CODE END EM */
 

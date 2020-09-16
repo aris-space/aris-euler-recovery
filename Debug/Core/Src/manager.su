@@ -1,3 +1,3 @@
-manager.c:85:6:schedulerinit	8	static
-manager.c:114:6:scheduler	32	static
-manager.c:225:10:getNextExecution	16	static
+manager.c:103:6:schedulerinit	8	static
+manager.c:164:6:scheduler	560	static
+manager.c:287:10:getNextExecution	16	static
