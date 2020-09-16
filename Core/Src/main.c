@@ -20,6 +20,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dma.h"
+#include "fatfs.h"
 #include "i2c.h"
 #include "sdio.h"
 #include "spi.h"
@@ -27,6 +29,15 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+#include "IO.h"
+#include "SD.h"
+#include "selftest.h"
+#include "manager.h"
+
+#include <string.h>
+#include <stdio.h>
+#include <math.h>
 
 /* USER CODE END Includes */
 
@@ -90,15 +101,18 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_I2C1_Init();
   MX_SPI2_Init();
   MX_ADC1_Init();
   MX_I2C2_Init();
   MX_SDIO_SD_Init();
   MX_SPI1_Init();
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
   turn_off_HAWKs();
+  turn_off_TDs();
 
   schedulerinit();
 
@@ -111,7 +125,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
 	scheduler();
+
   }
   /* USER CODE END 3 */
 }

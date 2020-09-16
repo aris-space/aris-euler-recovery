@@ -34,24 +34,6 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-
-#include "devices/LED.h"
-#include "devices/MS5607.h"
-#include "devices/ICM20601.h"
-#include "devices/SHT31.h"
-#include "devices/H3L.h"
-
-#include "IO.h"
-#include "selftest.h"
-#include "manager.h"
-
-#include <string.h>
-#include <stdio.h>
-#include <math.h>
-#include "spi.h"
-#include "i2c.h"
-#include "gpio.h"
-
 //#include "tasks/task_state_est.h"
 
 /* USER CODE END Includes */
@@ -64,10 +46,13 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 
+#define BUFLEN 1024
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
+
+#define DEBUG_PRINT 1
 
 /* USER CODE END EM */
 

@@ -1,0 +1,6 @@
+SD.c:19:10:bufsize	24	static
+SD.c:27:6:bufclear	24	static
+SD.c:36:9:find_file	96	static
+SD.c:68:9:init_sd	120	static
+SD.c:120:9:init_file	424	static
+SD.c:180:6:write_to_SD	24	static

@@ -10,10 +10,12 @@
 
 #include "main.h"
 
+
 extern void fire_HAWKs(void);
 extern void turn_off_HAWKs(void);
 extern void fire_TDs(void);
 extern void turn_off_TDs(void);
+extern void read_ADC(float * out);
 
 
 #endif /* INC_IO_H_ */

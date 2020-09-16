@@ -10,6 +10,7 @@
 #define MS5607_H_
 
 #include "main.h"
+#include "i2c.h"
 
 #define BARO1_INIT() \
   { \

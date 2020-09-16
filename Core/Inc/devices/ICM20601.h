@@ -7,6 +7,7 @@
 #define _ICM20602_H
 
 #include "main.h"
+#include "spi.h"
 // *** Macros *** //
 
 #define IMU1_INIT() \

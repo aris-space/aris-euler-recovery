@@ -18,20 +18,20 @@
 
 
 
-HAL_StatusTypeDef _ret;
 uint8_t _DELAY_HL = 100;
 uint8_t _ADDR_HL = 0x18 << 1;
 
 //almost copy of SHT31 drivers
-int H3L_INIT()
+uint8_t h3l_init(struct h3l_dev * dev)
 {
-	if (HAL_I2C_GetState(&hi2c1) != HAL_I2C_STATE_READY)
+	HAL_StatusTypeDef _ret;
+	if (HAL_I2C_GetState(dev->i2c_bus) != HAL_I2C_STATE_READY)
 	{
 		printf("i2c1 not ready!\n");
 	} else {
 		printf("i2c1 is ready!\n");
 	}
-	_ret = HAL_I2C_IsDeviceReady(&hi2c1, _ADDR_HL, 10, _DELAY_HL);
+	_ret = HAL_I2C_IsDeviceReady(dev->i2c_bus, dev->addr, 10, dev->delay);
 	if ( _ret != HAL_OK )
 	{
 		printf("H3L setup fail\n");
@@ -41,170 +41,89 @@ int H3L_INIT()
 
 	//power up
 	uint8_t PWR_CONF = 0b00111111;
-	PWR_CONF = 0x27;
+	//PWR_CONF = 0x27;
 
-	H3L_write(0x20,PWR_CONF);
+	h3l_write(dev, 0x20, PWR_CONF);
+
+
+	PWR_CONF = 0b10000000;
+	h3l_write(dev, 0x23, PWR_CONF);
 
 
 	//printf("H3L setup success\n");
 	//printf("H3L address: %d\n",_ADDR_HL);
 
-	unsigned char buf[6];
+	/*
+	uint8_t buf, reg;
 
-	buf[0] = (uint8_t)0x0F;
-	_ret = HAL_I2C_Master_Transmit(&hi2c1, _ADDR_HL, buf, 1, _DELAY_HL);
+	reg = (uint8_t)0x0F;
+	_ret = HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, &reg, 1, dev->delay);
 	//HAL_Delay(5);
-	buf[0] = 0;
-	buf[1] = 0;
-	buf[2] = 0;
+	_ret = HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, &buf, 1, dev->delay);
+	printf("WHOAMI: %d \n", buf);
+	*/
 
-	_ret = HAL_I2C_Master_Receive(&hi2c1, _ADDR_HL, buf, 1, _DELAY_HL);
-	//printf("WHOAMI: %d",buf[0]);
 	return 1;
 }
 
 
-void H3L_read_raw(uint8_t* buf)
+void h3l_read_raw(struct h3l_dev * dev, int16_t * dat)
 {
 
-	unsigned char _buf[2];
+	uint8_t reg;
+	uint8_t buf[6];
 
-	_buf[0] = (uint8_t)0x28;
-	_ret = HAL_I2C_Master_Transmit(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	_buf[0] = 0;
-	_ret = HAL_I2C_Master_Receive(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	buf[0] = _buf[0];
+	reg = 0x28;
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, &reg, 1, dev->delay);
+	HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, &buf[0], 1, dev->delay);
+	reg = 0x29;
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, &reg, 1, dev->delay);
+	HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, &buf[1], 1, dev->delay);
+	reg = 0x2A;
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, &reg, 1, dev->delay);
+	HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, &buf[2], 1, dev->delay);
+	reg = 0x2B;
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, &reg, 1, dev->delay);
+	HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, &buf[3], 1, dev->delay);
+	reg = 0x2C;
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, &reg, 1, dev->delay);
+	HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, &buf[4], 1, dev->delay);
+	reg = 0x2D;
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, &reg, 1, dev->delay);
+	HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, &buf[5], 1, dev->delay);
 
-	_buf[0] = (uint8_t)0x29;
-	_ret = HAL_I2C_Master_Transmit(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	_buf[0] = 0;
-	_ret = HAL_I2C_Master_Receive(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	buf[1] = _buf[0];
-
-	_buf[0] = (uint8_t)0x2a;
-	_ret = HAL_I2C_Master_Transmit(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	_buf[0] = 0;
-	_ret = HAL_I2C_Master_Receive(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	buf[2] = _buf[0];
-
-	_buf[0] = (uint8_t)0x2b;
-	_ret = HAL_I2C_Master_Transmit(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	_buf[0] = 0;
-	_ret = HAL_I2C_Master_Receive(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	buf[3] = _buf[0];
-
-	_buf[0] = (uint8_t)0x2c;
-	_ret = HAL_I2C_Master_Transmit(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	_buf[0] = 0;
-	_ret = HAL_I2C_Master_Receive(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	buf[4] = _buf[0];
-
-	_buf[0] = (uint8_t)0x2d;
-	_ret = HAL_I2C_Master_Transmit(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	_buf[0] = 0;
-	_ret = HAL_I2C_Master_Receive(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	buf[5] = _buf[0];
-
-	if ( _ret != HAL_OK )
-	{
-		printf("H3L read fail, error: %d \n",_ret);
-	}
+	dev->dat[0] = (buf[0]) | (int16_t)(buf[1] << 8);
+	dev->dat[1] = (buf[2]) | (int16_t)(buf[3] << 8);
+	dev->dat[2] = (buf[4]) | (int16_t)(buf[5] << 8);
+	dev->dat[0] = dev->dat[0] >> 4;
+	dev->dat[1] = dev->dat[1] >> 4;
+	dev->dat[2] = dev->dat[2] >> 4;
+	dat[0] = dev->dat[0];
+	dat[1] = dev->dat[1];
+	dat[2] = dev->dat[2];
 
 };
 
-void H3L_convert(uint8_t* buf, double* out)
+void h3l_convert(struct h3l_dev * dev, float* out)
 {
 
-	int16_t x = (buf[0])| (int16_t)(buf[1] << 8);
-	int16_t y = (buf[2])| (int16_t)(buf[3] << 8);
-	int16_t z = (buf[4])| (int16_t)(buf[5] << 8);
-	x = x >> 4;
-	y = y >> 4;
-	z = z >> 4;
-
-	out[0] = (double)(x) * 49. / 1000. * 9.81;
-	out[1] = (double)(y) * 49. / 1000. * 9.81;
-	out[2] = (double)(z) * 49. / 1000. * 9.81;
+	out[0] = (float)(dev->dat[0]) * 49. / 1000. * 9.81;
+	out[1] = (float)(dev->dat[1]) * 49. / 1000. * 9.81;
+	out[2] = (float)(dev->dat[2]) * 49. / 1000. * 9.81;
 
 	//printf("ax: %4.2f, ay: %4.2f, az: %4.2f\n",buffer[0],buffer[1],buffer[2]);
 
 }
 
 
-
-void H3L_read(double* buffer){
-
-
-	unsigned char buf[6];
-	unsigned char _buf[2];
-
-	_buf[0] = (uint8_t)0x28;
-	_ret = HAL_I2C_Master_Transmit(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	_buf[0] = 0;
-	_ret = HAL_I2C_Master_Receive(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	buf[0] = _buf[0];
-
-	_buf[0] = (uint8_t)0x29;
-	_ret = HAL_I2C_Master_Transmit(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	_buf[0] = 0;
-	_ret = HAL_I2C_Master_Receive(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	buf[1] = _buf[0];
-
-	_buf[0] = (uint8_t)0x2a;
-	_ret = HAL_I2C_Master_Transmit(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	_buf[0] = 0;
-	_ret = HAL_I2C_Master_Receive(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	buf[2] = _buf[0];
-
-	_buf[0] = (uint8_t)0x2b;
-	_ret = HAL_I2C_Master_Transmit(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	_buf[0] = 0;
-	_ret = HAL_I2C_Master_Receive(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	buf[3] = _buf[0];
-
-	_buf[0] = (uint8_t)0x2c;
-	_ret = HAL_I2C_Master_Transmit(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	_buf[0] = 0;
-	_ret = HAL_I2C_Master_Receive(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	buf[4] = _buf[0];
-
-	_buf[0] = (uint8_t)0x2d;
-	_ret = HAL_I2C_Master_Transmit(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	_buf[0] = 0;
-	_ret = HAL_I2C_Master_Receive(&hi2c1, _ADDR_HL, _buf, 1, _DELAY_HL);
-	buf[5] = _buf[0];
-
-	if ( _ret != HAL_OK )
-	{
-		printf("H3L read fail, error: %d \n",_ret);
-	}
-
-
-	int16_t x = (buf[0])| (int16_t)(buf[1] << 8);
-	int16_t y = (buf[2])| (int16_t)(buf[3] << 8);
-	int16_t z = (buf[4])| (int16_t)(buf[5] << 8);
-	x = x >> 4;
-	y = y >> 4;
-	z = z >> 4;
-
-	buffer[0] = (double)(x) * 49. / 1000. * 9.81;
-	buffer[1] = (double)(y) * 49. / 1000. * 9.81;
-	buffer[2] = (double)(z) * 49. / 1000. * 9.81;
-
-	//printf("ax: %4.2f, ay: %4.2f, az: %4.2f\n",buffer[0],buffer[1],buffer[2]);
-
-}
-
-void H3L_write(uint8_t REG, uint8_t val)
+void h3l_write(struct h3l_dev * dev, uint8_t reg, uint8_t val)
 {
-	unsigned char _buf[2];
+	uint8_t _buf[2];
 	//printf("writing to h3l: %d\n",val);
-	_buf[0] = REG;
+	_buf[0] = reg;
 	_buf[1] = val;
-	_ret = HAL_I2C_Master_Transmit(&hi2c1, _ADDR_HL, _buf, 2, _DELAY_HL);
-	if ( _ret != HAL_OK )
-	{
-		printf("H3L write fail, error: %d \n",_ret);
-	}
+
+	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, _buf, 2, dev->delay);
+
 };
 

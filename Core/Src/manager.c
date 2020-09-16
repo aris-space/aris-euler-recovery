@@ -6,11 +6,18 @@
  */
 
 #include "manager.h"
-
+#include "main.h"
+#include "devices/LED.h"
+#include "devices/MS5607.h"
+#include "devices/ICM20601.h"
+#include "devices/SHT31.h"
+#include "devices/H3L.h"
 
 task_t BARO_TASK = BARO_TASK_INIT();
 task_t SHT_TASK = SHT_TASK_INIT();
 task_t IMU_TASK = IMU_TASK_INIT();
+task_t ACCEL_TASK = ACCEL_TASK_INIT();
+task_t ADC_TASK = ADC_TASK_INIT();
 
 task_t RDY_TASK = RDY_TASK_INIT();
 task_t STAT_TASK = STAT_TASK_INIT();
@@ -22,6 +29,7 @@ LED SAVE = SAVE_INIT();
 LED PRGM = PRGM_INIT();
 LED RDY = RDY_INIT();
 
+
 MS5607 BARO1 = BARO1_INIT();
 MS5607 BARO2 = BARO2_INIT();
 
@@ -29,6 +37,9 @@ ICM20601 IMU1 = IMU1_INIT();
 ICM20601 IMU2 = IMU2_INIT();
 
 SHT31 TEMP = SHT_INIT();
+
+H3L ACCEL = ACCEL_INIT();
+
 
 uint32_t tick;
 
@@ -43,11 +54,20 @@ float t_p2 = 0;
 int16_t accel1_raw_buf[6];
 int16_t accel2_raw_buf[6];
 
+int16_t accel_raw[3];
+
+float accel[3];
+
 float accel1_val[6];
 float accel2_val[6];
 
 uint16_t t_buf[2];
 float t_val[2];
+
+float adc_dat[8];
+
+
+char buffer[BUFLEN]; // to store data
 
 
 void schedulerinit () {
@@ -56,6 +76,7 @@ void schedulerinit () {
 	sht31_init(&TEMP);
 	icm20601_init(&IMU1);
 	icm20601_init(&IMU2);
+	h3l_init(&ACCEL);
 
 	turn_on(&STAT);
 	HAL_Delay(300);
@@ -134,11 +155,21 @@ void scheduler (){
 	}
 
 	// TASK SHOCK ACCEL
-	// .........
+
+	if(tick >= getNextExecution(&ACCEL_TASK)){
+		ACCEL_TASK.last_call = HAL_GetTick();
+		h3l_read_raw(&ACCEL, accel_raw);
+		h3l_convert(&ACCEL, accel);
+	}
 
 	// TASK ADC
-	// .........
+	if(tick >= getNextExecution(&ADC_TASK)){
+		ADC_TASK.last_call = HAL_GetTick();
+		read_ADC(adc_dat);
+	}
 
+	// TASK STATE ESTIMATION
+	// .........
 
 	// TASK LOGGING
 	// .........
@@ -157,6 +188,9 @@ void scheduler (){
 	printf("IMU2 ax: %4.2f m/s2 \n", accel2_val[1]);
 	printf("IMU2 ay: %4.2f m/s2 \n", accel2_val[2]);
 	printf("IMU2 az: %4.2f m/s2 \n", accel2_val[3]);
+	printf("ACC ax: %4.2f m/s2 \n", accel[0]);
+	printf("ACC ay: %4.2f m/s2 \n", accel[1]);
+	printf("ACC az: %4.2f m/s2 \n", accel[2]);
 
 }
 

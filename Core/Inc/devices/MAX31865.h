@@ -33,7 +33,6 @@
     .cs_port = SPI1_CS_IMU_GPIO_Port, \
     .cs_pin = SPI1_CS_IMU_Pin, \
     .spi_bus = &hspi1, \
-	.last_call = 0, \
   }
 
 //#########################################################################################################################
@@ -42,7 +41,6 @@ typedef struct
   GPIO_TypeDef      *cs_gpio;
   uint16_t          cs_pin;
   SPI_HandleTypeDef *spi_bus;
-  uint32_t			last_call;
 } Max31865_t;
 //#########################################################################################################################
 void  Max31865_init(Max31865_t *max31865,SPI_HandleTypeDef *spi,GPIO_TypeDef  *cs_gpio,uint16_t cs_pin,uint8_t  numwires, uint8_t filterHz);
