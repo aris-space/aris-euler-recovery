@@ -16,6 +16,7 @@ void bufclear(char * buffer);
 uint8_t find_file(void);
 uint8_t init_sd(uint16_t * file_count, uint16_t * log_count);
 uint8_t init_file(char * FILE_NAME, char * LOG_NAME);
+void read_from_SD(char * FILE_NAME, char * buffer);
 void write_to_SD(char * FILE_NAME, char * buffer);
 void log_to_SD(char * FILE_NAME, char * buffer);
 

@@ -46,13 +46,17 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 
-#define BUFLEN 1024
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 
 #define DEBUG_PRINT 0
+
+#define FAKE_DATA 0
+
+#define BUFLEN 1024
+
 
 /* USER CODE END EM */
 

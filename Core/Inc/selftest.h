@@ -10,6 +10,8 @@
 
 #include "main.h"
 
+extern void config_baro(void);
+extern void config_imu(void);
 extern uint8_t selftest(void);
 
 

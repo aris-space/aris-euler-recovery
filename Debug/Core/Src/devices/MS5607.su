@@ -1,4 +1,4 @@
-MS5607.c:37:9:ms5607_init	40	static
-MS5607.c:95:6:ms5607_prep_pressure	32	static
-MS5607.c:113:6:ms5607_read_pressure	32	static
-MS5607.c:131:6:ms5607_convert	96	static
+MS5607.c:39:9:ms5607_init	40	static
+MS5607.c:97:6:ms5607_prep_pressure	32	static
+MS5607.c:115:6:ms5607_read_pressure	32	static
+MS5607.c:133:6:ms5607_convert	96	static

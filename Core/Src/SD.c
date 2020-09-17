@@ -168,7 +168,14 @@ uint8_t init_file(char * FILE_NAME, char * LOG_NAME){
 
 	//sprintf(buffer,"time: %ld,SHT STATE: %d\n ,BARO1 STATE: %d\n ,BARO2 STATE: %d \n ,IMU1 STATE %d\n ,IMU2 STATE %d\n, H3L STATE %d\n",HAL_GetTick(), SHT_STATE,BARO1_STATE,BARO2_STATE,IMU1_STATE,IMU2_STATE,H3L_STATE);
 
+	bw = 0;
 	char myLog[128];
+
+	for (int i=0; i<128; i++)
+	{
+		myLog[i] = '\0';
+	}
+
 	sprintf(myLog, "TIMESTAMP, STATE, MSG \n %ld, SD WRITE OK, file name: %s \n", HAL_GetTick(), FILE_NAME);
 	fresult = f_write(&log_file, myLog, sizeof(myLog), &bw);
 
@@ -184,6 +191,12 @@ uint8_t init_file(char * FILE_NAME, char * LOG_NAME){
 	//bufclear();
 
 	return 1;
+
+}
+
+void read_from_SD(char * FILE_NAME, char * buffer){
+
+
 
 }
 

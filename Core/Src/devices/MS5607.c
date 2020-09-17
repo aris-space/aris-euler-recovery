@@ -32,6 +32,8 @@
 
 
 #include <devices/MS5607.h>
+#include <stdio.h>
+#include <math.h>
 
 
 uint8_t ms5607_init(struct ms5607_dev * dev)

@@ -1,4 +1,4 @@
-Core/Src/manager.o: ../Core/Src/manager.c ../Core/Inc/manager.h \
+Core/Src/buzzer.o: ../Core/Src/buzzer.c ../Core/Inc/buzzer.h \
  ../Core/Inc/main.h ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -31,13 +31,9 @@ Core/Src/manager.o: ../Core/Src/manager.c ../Core/Inc/manager.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sd.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_sdmmc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
- ../Core/Inc/main.h ../Core/Inc/devices/LED.h \
- ../Core/Inc/devices/MS5607.h ../Core/Inc/i2c.h \
- ../Core/Inc/devices/ICM20601.h ../Core/Inc/spi.h \
- ../Core/Inc/devices/SHT31.h ../Core/Inc/devices/H3L.h ../Core/Inc/IO.h \
- ../Core/Inc/SD.h ../Core/Inc/selftest.h ../Core/Inc/buzzer.h
+ ../Core/Inc/dwt_stm32_delay.h
 
-../Core/Inc/manager.h:
+../Core/Inc/buzzer.h:
 
 ../Core/Inc/main.h:
 
@@ -105,26 +101,4 @@ Core/Src/manager.o: ../Core/Src/manager.c ../Core/Inc/manager.h \
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 
-../Core/Inc/main.h:
-
-../Core/Inc/devices/LED.h:
-
-../Core/Inc/devices/MS5607.h:
-
-../Core/Inc/i2c.h:
-
-../Core/Inc/devices/ICM20601.h:
-
-../Core/Inc/spi.h:
-
-../Core/Inc/devices/SHT31.h:
-
-../Core/Inc/devices/H3L.h:
-
-../Core/Inc/IO.h:
-
-../Core/Inc/SD.h:
-
-../Core/Inc/selftest.h:
-
-../Core/Inc/buzzer.h:
+../Core/Inc/dwt_stm32_delay.h:

@@ -17,6 +17,7 @@
 #include "IO.h"
 #include "SD.h"
 #include "selftest.h"
+#include "buzzer.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -28,6 +29,7 @@ task_t IMU_TASK = IMU_TASK_INIT();
 task_t ACCEL_TASK = ACCEL_TASK_INIT();
 task_t ADC_TASK = ADC_TASK_INIT();
 task_t LOG_TASK = LOG_TASK_INIT();
+task_t STATE_EST_TASK = STATE_EST_TASK_INIT();
 
 task_t RDY_TASK = RDY_TASK_INIT();
 task_t STAT_TASK = STAT_TASK_INIT();
@@ -167,26 +169,26 @@ void scheduler (){
 
 	// TASK LED
 	if(tick >= getNextExecution(&RDY_TASK)){
-		RDY_TASK.last_call = HAL_GetTick();
+		RDY_TASK.last_call = tick;
 		toggle(&RDY);
 	}
 	if(tick >= getNextExecution(&SAVE_TASK)){
-		SAVE_TASK.last_call = HAL_GetTick();
+		SAVE_TASK.last_call = tick;
 		toggle(&SAVE);
 	}
 	if(tick >= getNextExecution(&STAT_TASK)){
-		STAT_TASK.last_call = HAL_GetTick();
+		STAT_TASK.last_call = tick;
 		toggle(&STAT);
 	}
 	if(tick >= getNextExecution(&PRGM_TASK)){
-		PRGM_TASK.last_call = HAL_GetTick();
+		PRGM_TASK.last_call = tick;
 		toggle(&PRGM);
 	}
 
 
 	// TASK SHT
 	if(tick >= getNextExecution(&SHT_TASK)){
-		SHT_TASK.last_call = HAL_GetTick();
+		SHT_TASK.last_call = tick;
 		sht31_read(&TEMP, t_val, t_buf);
 	}
 
@@ -197,13 +199,13 @@ void scheduler (){
 			case MS_TEMPERATURE_REQ:
 				ms5607_prep_pressure(&BARO1, raw_data1);
 				ms5607_prep_pressure(&BARO2, raw_data2);
-				BARO_TASK.last_call = HAL_GetTick();
+				BARO_TASK.last_call = tick;
 				BARO_TASK.stage = MS_PRESSURE_REQ;
 				break;
 			case MS_PRESSURE_REQ:
 				ms5607_read_pressure(&BARO1, raw_data1);
 				ms5607_read_pressure(&BARO2, raw_data2);
-				BARO_TASK.last_call = HAL_GetTick();
+				BARO_TASK.last_call = tick;
 				ms5607_convert(&BARO1, &p1, &t_p1);
 				ms5607_convert(&BARO2, &p2, &t_p2);
 				BARO_TASK.stage = MS_TEMPERATURE_REQ;
@@ -214,7 +216,7 @@ void scheduler (){
 	// TASK IMU
 
 	if(tick >= getNextExecution(&IMU_TASK)){
-		IMU_TASK.last_call = HAL_GetTick();
+		IMU_TASK.last_call = tick;
 		//icm20601_read_data_raw(&IMU1, accel1_raw_buf);
 		//icm20601_convert_data(&IMU1, accel1_val, accel1_raw_buf);
 		icm20601_read_data(&IMU1, accel1_val);
@@ -227,14 +229,14 @@ void scheduler (){
 	// TASK SHOCK ACCEL
 
 	if(tick >= getNextExecution(&ACCEL_TASK)){
-		ACCEL_TASK.last_call = HAL_GetTick();
+		ACCEL_TASK.last_call = tick;
 		h3l_read_raw(&ACCEL, accel_raw);
 		h3l_convert(&ACCEL, accel);
 	}
 
 	// TASK ADC
 	if(tick >= getNextExecution(&ADC_TASK)){
-		ADC_TASK.last_call = HAL_GetTick();
+		ADC_TASK.last_call = tick;
 		read_ADC(adc_dat);
 		if (DEBUG_PRINT == 1) printf("1 %4.2f V \n", adc_dat[0]);
 		if (DEBUG_PRINT == 1) printf("2 %4.2f V \n", adc_dat[1]);
@@ -255,11 +257,32 @@ void scheduler (){
 	}
 
 	// TASK STATE ESTIMATION
-	// .........
+
+	if(tick >= getNextExecution(&STATE_EST_TASK)){
+		STATE_EST_TASK.last_call = tick;
+		if (FAKE_DATA == 1){
+
+			// if file does not exist: FAKE_DATA == 0 and continue with nominal operation
+
+			// use fake/old data from SD card
+			p1 = 0;
+			p2 = 0;
+			accel1_val[1] = 0;
+			accel1_val[2] = 0;
+			accel1_val[3] = 0;
+			accel2_val[1] = 0;
+			accel2_val[2] = 0;
+			accel2_val[3] = 0;
+		}
+
+		// call state estimation
+		// .........
+
+	}
 
 	// TASK LOGGING
 	if(tick >= getNextExecution(&LOG_TASK)){
-		LOG_TASK.last_call = HAL_GetTick();
+		LOG_TASK.last_call = tick;
 		sprintf(buffer,"%ld, %d ,%d, %d, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f\n",
 				tick,armed,event,flight_phase, alt, velocity, t_val[1],t_val[0],t_cpu,t_p1,t_p2,accel1_val[0],accel2_val[0],p1,p2,accel1_val[1],accel1_val[2],accel1_val[3],accel1_val[4],accel1_val[5],accel1_val[6],accel2_val[1],accel2_val[2],accel2_val[3],accel2_val[4],accel2_val[5],accel2_val[6],accel[0],accel[1],accel[2],I_BAT1,I_BAT2,V_BAT1,V_BAT2,V_LDR,V_TD1,V_TD2);
 

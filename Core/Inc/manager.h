@@ -18,6 +18,9 @@
 #define ADC_INT 20
 #define LOG_INT 0
 
+// interval of state estimation call
+#define STATE_EST_INT 20
+
 // BARO TASK
 #define BARO_TASK_INIT() \
   { \
@@ -64,6 +67,14 @@
 	.last_call = 0, \
 	.stage = 0, \
 	.interval = LOG_INT, \
+  }
+
+// STATE ESTIMATION TASK
+#define STATE_EST_TASK_INIT() \
+  { \
+	.last_call = 0, \
+	.stage = 0, \
+	.interval = STATE_EST_INT, \
   }
 
 // LED TASKS
