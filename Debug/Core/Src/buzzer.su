@@ -1,3 +1,4 @@
 dwt_stm32_delay.h:25:22:DWT_Delay_us	24	static
 buzzer.c:33:6:play	24	static
-buzzer.c:44:6:coffin_dance	16	static
+buzzer.c:44:6:take_on_me	8	static
+buzzer.c:92:6:coffin_dance	16	static

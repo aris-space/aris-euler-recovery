@@ -1,8 +1,9 @@
-SD.c:21:10:bufsize	24	static
-SD.c:29:6:bufclear	24	static
-SD.c:38:9:find_file	96	static
-SD.c:70:9:init_sd	128	static
-SD.c:129:9:init_file	408	static
-SD.c:197:6:read_from_SD	16	static
-SD.c:204:6:write_to_SD	24	static
-SD.c:252:6:log_to_SD	24	static
+SD.c:22:10:bufsize	24	static
+SD.c:30:6:bufclear	24	static
+SD.c:39:9:find_file	96	static
+SD.c:71:9:init_sd	128	static
+SD.c:130:9:init_file	408	static
+SD.c:198:7:extract_from_str	64	static
+SD.c:214:6:read_from_SD	1096	static
+SD.c:282:6:write_to_SD	24	static
+SD.c:330:6:log_to_SD	24	static

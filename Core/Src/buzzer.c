@@ -11,20 +11,19 @@
 #include "dwt_stm32_delay.h"
 
 
-float B = 1864.66;
-float As = 1661.22;
-float Es = 1244.51;
-float G = 392;
-float Ais = 466.16;
-float A = 440;
-float C = 523;
-float D = 587.0;
-float Ais2 = 932.3;
-float A2 = 880;
+float C = 523.25;
+float Cis = 554.37;
+float D = 587.33;
+float Dis = 622.25;
+float E = 659.25;
+float F = 698.46;
+float Fis = 739.99;
+float G = 783.99;
+float Gis = 830.61;
+float A = 880.0;
+float Ais = 932.33;
+float B = 987.77;
 
-float CIS = 1109.0;
-float H = 988.0;
-float F = 740.0;
 
 float sixteenth = 128.0;
 float eighth = 256.0;
@@ -41,6 +40,54 @@ void play(float freq, float time)
 	}
 	HAL_GPIO_WritePin(BUZ_GPIO_Port, BUZ_Pin, GPIO_PIN_RESET);
 };
+
+void take_on_me(void)
+{
+	play(2 * Fis,sixteenth);
+	HAL_Delay(sixteenth);
+	play(2 * Fis,sixteenth);
+	HAL_Delay(sixteenth);
+	play(2 * D,eighth);
+	play(B,eighth);
+	HAL_Delay(eighth);
+	play(B,eighth);
+	HAL_Delay(eighth);
+	play(2 * E,eighth);
+	HAL_Delay(eighth);
+	play(2 * E,eighth);
+	HAL_Delay(eighth);
+	play(2 * E,eighth);
+	play(2 * Gis,sixteenth);
+	HAL_Delay(sixteenth);
+	play(2 * Gis,sixteenth);
+	HAL_Delay(sixteenth);
+	play(2 * A,eighth);
+	play(4 * Cis,eighth);
+	play(2 * A,sixteenth);
+	HAL_Delay(sixteenth);
+	play(2 * A,sixteenth);
+	HAL_Delay(sixteenth);
+	play(2 * A,sixteenth);
+	HAL_Delay(sixteenth);
+	play(2 * E,eighth);
+	HAL_Delay(eighth);
+	play(2 * D,eighth);
+	HAL_Delay(eighth);
+	play(2 * Fis,eighth);
+	HAL_Delay(eighth);
+	play(2 * Fis,eighth);
+	HAL_Delay(eighth);
+	play(2 * Fis,eighth);
+	HAL_Delay(eighth);
+	play(2 * Fis,eighth);
+	play(2 * E,sixteenth);
+	HAL_Delay(sixteenth);
+	play(2 * E,sixteenth);
+	HAL_Delay(sixteenth);
+	play(2 * Fis,eighth);
+	play(2 * E,eighth);
+
+}
 
 void coffin_dance(int n)
 {
@@ -63,18 +110,18 @@ void coffin_dance(int n)
 	play(n*G,eighth);
 	HAL_Delay(eighth);
 	play(n*G,eighth);
-	play(n*Ais2,eighth);
-	play(n*A2,eighth);
-	play(n*Ais2,eighth);
-	play(n*A2,eighth);
-	play(n*Ais2,eighth);
+	play(n*2*Ais,eighth);
+	play(n*2*A,eighth);
+	play(n*2*Ais,eighth);
+	play(n*2*A,eighth);
+	play(n*2*Ais,eighth);
 	play(n*G,eighth);
 	HAL_Delay(eighth);
 	play(n*G,eighth);
-	play(n*Ais2,eighth);
-	play(n*A2,eighth);
-	play(n*Ais2,eighth);
-	play(n*A2,eighth);
-	play(n*Ais2,eighth);
+	play(n*2*Ais,eighth);
+	play(n*2*A,eighth);
+	play(n*2*Ais,eighth);
+	play(n*2*A,eighth);
+	play(n*2*Ais,eighth);
 }
 

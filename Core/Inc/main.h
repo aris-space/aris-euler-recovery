@@ -53,9 +53,10 @@ extern "C" {
 
 #define DEBUG_PRINT 0
 
-#define FAKE_DATA 0
-
 #define BUFLEN 1024
+
+#define FAKE_LINE_LEN 1024
+#define FAKE_FILE_LEN 1024
 
 
 /* USER CODE END EM */

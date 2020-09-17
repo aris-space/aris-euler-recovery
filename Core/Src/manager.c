@@ -54,6 +54,8 @@ H3L ACCEL = ACCEL_INIT();
 
 
 uint32_t tick;
+uint32_t fake_tick;
+uint32_t counter = 0;
 
 uint8_t raw_data1[3];
 uint8_t raw_data2[3];
@@ -101,6 +103,18 @@ float V_BAT2;
 float V_LDR;
 float V_TD1;
 float V_TD2;
+
+uint8_t FAKE_DATA = 0;
+
+float TIME[FAKE_FILE_LEN];
+float P1[FAKE_FILE_LEN];
+float P2[FAKE_FILE_LEN];
+float Ax1[FAKE_FILE_LEN];
+float Ay1[FAKE_FILE_LEN];
+float Az1[FAKE_FILE_LEN];
+float Ax2[FAKE_FILE_LEN];
+float Ay2[FAKE_FILE_LEN];
+float Az2[FAKE_FILE_LEN];
 
 void schedulerinit () {
 	ms5607_init(&BARO1);
@@ -160,6 +174,15 @@ void schedulerinit () {
 	bufclear(buffer);
 	sprintf(buffer, "%ld, SCHEDULER INIT OK, - \n", HAL_GetTick());
 	log_to_SD(LOG_NAME, buffer);
+
+	//coffin_dance(1);
+	take_on_me();
+
+	if (FAKE_DATA == 1)
+	{
+		read_from_SD("FAKE.CSV", TIME, P1, P2, Ax1, Ay1, Az1, Ax2, Ay2, Az2);
+	}
+
 
 }
 
@@ -260,23 +283,47 @@ void scheduler (){
 
 	if(tick >= getNextExecution(&STATE_EST_TASK)){
 		STATE_EST_TASK.last_call = tick;
+
 		if (FAKE_DATA == 1){
 
-			// if file does not exist: FAKE_DATA == 0 and continue with nominal operation
+			// if file does not exist, continue with nominal operation
+			if (TIME[counter] == 0){
+				FAKE_DATA = 0;
+			} else {
+				// use fake/old data from SD card
+				fake_tick = TIME[counter];
+				p1 = P1[counter];
+				p2 = P2[counter];
+				accel1_val[1] = Ax1[counter];
+				accel1_val[2] = Ay1[counter];
+				accel1_val[3] = Az1[counter];
+				accel2_val[1] = Ax2[counter];
+				accel2_val[2] = Ay2[counter];
+				accel2_val[3] = Az2[counter];
+				counter ++;
+			}
 
-			// use fake/old data from SD card
-			p1 = 0;
-			p2 = 0;
-			accel1_val[1] = 0;
-			accel1_val[2] = 0;
-			accel1_val[3] = 0;
-			accel2_val[1] = 0;
-			accel2_val[2] = 0;
-			accel2_val[3] = 0;
+			// if fake file ends, continue with nominal operation
+			if (counter >= FAKE_FILE_LEN){
+				FAKE_DATA = 0;
+			}
 		}
 
 		// call state estimation
 		// .........
+
+
+		// timer section
+
+		// if apogee
+		// fire_HAWKs();
+
+		// if second event
+		// fire_TDs();
+
+		// if second event and current high (fused an iginiter)
+		// turn off the pyro channels to save power and protect the circuit board
+		// turn_off_TDs();
 
 	}
 

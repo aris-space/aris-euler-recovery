@@ -16,6 +16,7 @@ UINT br, bw;   // file read/write count
 
 FATFS fs;  // file system
 FIL data_file;  // file
+FIL fake_file;  // file
 FIL log_file;  // file
 
 uint16_t bufsize (char *buf)
@@ -194,8 +195,85 @@ uint8_t init_file(char * FILE_NAME, char * LOG_NAME){
 
 }
 
-void read_from_SD(char * FILE_NAME, char * buffer){
+float extract_from_str(char* buffer, uint8_t *start, uint8_t *end){
+	uint8_t x = *start;
+	uint8_t y = *end;
+    char c[30];
+	for (int j=0; j<30; j++) {
+		c[j] = '\0';
+	}
+	while (buffer[y] != ','){
+		y ++;
+	}
+	*end = y;
+	strncpy(c, buffer + x, y - x);
 
+	return strtof(c,NULL);
+}
+
+void read_from_SD(char * FILE_NAME, float * TIME, float * P1, float * P2, float * Ax1, float * Ay1, float * Az1, float * Ax2, float * Ay2, float * Az2){
+
+	char buffer[FAKE_LINE_LEN];
+
+	for (int i = 0; i < FAKE_FILE_LEN; i++){
+	        f_gets(buffer, f_size(&fake_file), &fake_file);
+	        printf("reading line: %d  \n",i);
+	        uint8_t x = 0;
+	        uint8_t y = 0;
+
+			TIME[i] = extract_from_str(buffer, &x, &y);
+
+			x = y + 1;
+			y = y + 1;
+
+			P1[i] = extract_from_str(buffer, &x, &y);
+
+			x = y + 1;
+			y = y + 1;
+
+			P2[i] = extract_from_str(buffer, &x, &y);
+
+			x = y + 1;
+			y = y + 1;
+
+			Ax1[i] = extract_from_str(buffer, &x, &y);
+
+			x = y + 1;
+			y = y + 1;
+
+	 		Ay1[i] = extract_from_str(buffer, &x, &y);
+
+	 		x = y + 1;
+			y = y + 1;
+
+			Az1[i] = extract_from_str(buffer, &x, &y);
+
+			x = y + 1;
+			y = y + 1;
+
+	 		Ax2[i] = extract_from_str(buffer, &x, &y);
+
+	 		x = y + 1;
+			y = y + 1;
+
+	 		Ay2[i] = extract_from_str(buffer, &x, &y);
+
+	 		x = y + 1;
+			y = y + 1;
+
+		    char c[30];
+
+			for (int j=0; j<30; j++) {
+				c[j] = '\0';
+			}
+
+			strncpy(c, buffer + x, 10);
+
+	 		Az2[i] = strtof(c,NULL);
+	    }
+
+		// Close file
+		f_close(&fake_file);
 
 
 }
