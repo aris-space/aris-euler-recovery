@@ -22,6 +22,8 @@ SUBDIRS := \
 Core/Src \
 Core/Src/devices \
 Core/Startup \
+Core/aris-euler-state-estimation/Src/Sim_Con \
+Core/aris-euler-state-estimation/Src/Util \
 Drivers/STM32F4xx_HAL_Driver/Src \
 FATFS/App \
 FATFS/Target \

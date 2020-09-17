@@ -18,6 +18,7 @@
 #include "SD.h"
 #include "selftest.h"
 #include "buzzer.h"
+#include "Sim_Con/state_est.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -72,8 +73,8 @@ int16_t accel_raw[3];
 
 float accel[3];
 
-float accel1_val[6];
-float accel2_val[6];
+float accel1_val[7];
+float accel2_val[7];
 
 uint16_t t_buf[2];
 float t_val[2];
@@ -104,6 +105,8 @@ float V_LDR;
 float V_TD1;
 float V_TD2;
 
+state_est_state_t state_est_state = { 0 };
+
 uint8_t FAKE_DATA = 0;
 
 float TIME[FAKE_FILE_LEN];
@@ -115,6 +118,9 @@ float Az1[FAKE_FILE_LEN];
 float Ax2[FAKE_FILE_LEN];
 float Ay2[FAKE_FILE_LEN];
 float Az2[FAKE_FILE_LEN];
+
+int8_t IMU_SIGN[3] = {1,0,0};
+int8_t ACC_SIGN[3] = {1,0,0};
 
 void schedulerinit () {
 	ms5607_init(&BARO1);
@@ -183,7 +189,13 @@ void schedulerinit () {
 		read_from_SD("FAKE.CSV", TIME, P1, P2, Ax1, Ay1, Az1, Ax2, Ay2, Az2);
 	}
 
+	float ground_pressure = 0;
+	float ground_temperature = 0;
 
+	config_baro(&TEMP, &BARO1, &BARO2, &ground_temperature, &ground_pressure);
+	config_imu(&IMU1, &IMU2, IMU_SIGN, ACC_SIGN);
+
+	reset_state_est_state(ground_pressure, ground_temperature, &state_est_state);
 }
 
 void scheduler (){
@@ -310,8 +322,22 @@ void scheduler (){
 		}
 
 		// call state estimation
-		// .........
 
+		state_est_state.state_est_meas.baro_data[0].pressure = p1;
+		state_est_state.state_est_meas.baro_data[0].temperature = t_p1;
+		state_est_state.state_est_meas.baro_data[0].ts = tick;
+
+		state_est_state.state_est_meas.imu_data[0].acc_x = IMU_SIGN[0]*accel1_val[0] + IMU_SIGN[1]*accel1_val[1] + IMU_SIGN[2]*accel1_val[2];
+		state_est_state.state_est_meas.imu_data[0].ts = tick;
+
+		state_est_state.state_est_meas.baro_data[1].pressure = p2;
+		state_est_state.state_est_meas.baro_data[1].temperature = t_p2;
+		state_est_state.state_est_meas.baro_data[1].ts = tick;
+
+		state_est_state.state_est_meas.imu_data[1].acc_x = IMU_SIGN[0]*accel2_val[0] + IMU_SIGN[1]*accel2_val[1] + IMU_SIGN[2]*accel2_val[2];
+		state_est_state.state_est_meas.imu_data[1].ts = tick;
+
+		state_est_step(tick, &state_est_state, 1);
 
 		// timer section
 

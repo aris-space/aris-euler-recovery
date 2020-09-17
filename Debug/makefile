@@ -13,6 +13,8 @@ RM := rm -rf
 -include FATFS/Target/subdir.mk
 -include FATFS/App/subdir.mk
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
+-include Core/aris-euler-state-estimation/Src/Util/subdir.mk
+-include Core/aris-euler-state-estimation/Src/Sim_Con/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/devices/subdir.mk
 -include Core/Src/subdir.mk

@@ -1,4 +1,9 @@
-Core/Src/selftest.o: ../Core/Src/selftest.c ../Core/Inc/selftest.h \
+Core/aris-euler-state-estimation/Src/Sim_Con/state_est.o: \
+ ../Core/aris-euler-state-estimation/Src/Sim_Con/state_est.c \
+ ../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/state_est.h \
+ ../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/../Util/math_utils.h \
+ ../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/env.h \
+ ../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/state_est_const.h \
  ../Core/Inc/main.h ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -31,12 +36,16 @@ Core/Src/selftest.o: ../Core/Src/selftest.c ../Core/Inc/selftest.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sd.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_sdmmc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
- ../Core/Inc/devices/MS5607.h ../Core/Inc/main.h ../Core/Inc/i2c.h \
- ../Core/Inc/devices/ICM20601.h ../Core/Inc/spi.h \
- ../Core/Inc/devices/SHT31.h ../Core/Inc/devices/H3L.h \
- ../Core/Inc/buzzer.h
+ ../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/kf.h \
+ ../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/flight_phase_detection.h
 
-../Core/Inc/selftest.h:
+../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/state_est.h:
+
+../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/../Util/math_utils.h:
+
+../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/env.h:
+
+../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/state_est_const.h:
 
 ../Core/Inc/main.h:
 
@@ -104,18 +113,6 @@ Core/Src/selftest.o: ../Core/Src/selftest.c ../Core/Inc/selftest.h \
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 
-../Core/Inc/devices/MS5607.h:
+../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/kf.h:
 
-../Core/Inc/main.h:
-
-../Core/Inc/i2c.h:
-
-../Core/Inc/devices/ICM20601.h:
-
-../Core/Inc/spi.h:
-
-../Core/Inc/devices/SHT31.h:
-
-../Core/Inc/devices/H3L.h:
-
-../Core/Inc/buzzer.h:
+../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/flight_phase_detection.h:

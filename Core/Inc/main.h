@@ -29,12 +29,9 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
-#include "stm32f4xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
-//#include "tasks/task_state_est.h"
 
 /* USER CODE END Includes */
 
@@ -52,6 +49,8 @@ extern "C" {
 /* USER CODE BEGIN EM */
 
 #define DEBUG_PRINT 0
+
+#define IGNORE_ERRORS 0
 
 #define BUFLEN 1024
 
