@@ -1,4 +1,4 @@
-manager.c:134:9:launch_detect	32	static
+manager.c:134:9:launch_detect	40	static
 manager.c:150:6:schedulerinit	40	static
-manager.c:226:6:scheduler	592	static
-manager.c:509:10:getNextExecution	16	static
+manager.c:236:6:scheduler	592	static
+manager.c:527:10:getNextExecution	16	static

@@ -131,11 +131,11 @@ float Az2[FAKE_FILE_LEN];
 
 float launch_detect_buffer[5];
 
-uint8_t launch_detect(float a1, float a2){
+uint8_t launch_detect(float * a1, float * a2){
 	for (int i = 1; i < 5; i++){
 		launch_detect_buffer[i-1] = launch_detect_buffer[i-1];
 	}
-	launch_detect_buffer[4] = (a1 + a2) / 2;
+	launch_detect_buffer[4] = (sqrt(a1[1]*a1[1] + a1[2]*a1[2] + a1[3]*a1[3]) + sqrt(a2[1]*a2[1] + a2[2]*a2[2] + a2[3]*a2[3])) / 2;
 	float sum_a = 0;
 	for (int i = 0; i < 5; i++){
 		sum_a += launch_detect_buffer[i];
@@ -148,6 +148,8 @@ uint8_t launch_detect(float a1, float a2){
 }
 
 void schedulerinit () {
+
+	//initialize all devices
 	ms5607_init(&BARO1);
 	ms5607_init(&BARO2);
 	sht31_init(&TEMP);
@@ -156,17 +158,22 @@ void schedulerinit () {
 	h3l_init(&ACCEL);
 	init_ADC();
 
+	// cycle through LEDs
 	turn_on(&STAT);
 	HAL_Delay(300);
 	turn_on(&SAVE);
 	HAL_Delay(300);
 	turn_on(&PRGM);
 	HAL_Delay(300);
+	turn_on(&RDY);
+	HAL_Delay(300);
 
 	turn_off(&STAT);
 	turn_off(&SAVE);
 	turn_off(&PRGM);
+	turn_off(&RDY);
 
+	// initialize SD card
 	turn_on(&SAVE);
 	SD_state = init_sd(&num_dat_file, &num_log_file);
 	if (SD_state == 0){
@@ -211,8 +218,11 @@ void schedulerinit () {
 
 	if (FAKE_DATA == 1)
 	{
+		// read in fake data
 		read_from_SD("FAKE.CSV", TIME, P1, P2, Ax1, Ay1, Az1, Ax2, Ay2, Az2);
 	}
+
+	// initialize state estimation with environment values
 
 	float ground_pressure = 0;
 	float ground_temperature = 0;
@@ -327,7 +337,7 @@ void scheduler (){
 			if (TIME[counter] == 0){
 				FAKE_DATA = 0;
 			} else {
-				// use fake/old data from SD card
+				// use fake/old data from SD card to overwrite current sensor data
 				fake_tick = TIME[counter];
 				p1 = P1[counter];
 				p2 = P2[counter];
@@ -349,7 +359,7 @@ void scheduler (){
 		// call state estimation
 		if (state_est_state.flight_phase_detection.flight_phase < DESCENT){
 
-
+			// feed in sensor values
 			state_est_state.state_est_meas.baro_data[0].pressure = p1;
 			state_est_state.state_est_meas.baro_data[0].temperature = t_p1;
 			state_est_state.state_est_meas.baro_data[0].ts = tick;
@@ -366,6 +376,9 @@ void scheduler (){
 
 			state_est_step(tick, &state_est_state, true);
 		} else {
+
+			// ignore state estimation for descent, calculate altitude from barometer readings only.
+
 			float p[2];
 			float altitude[2] = {0,0};
 			p[0] = p1;
@@ -395,7 +408,7 @@ void scheduler (){
 		}
 
 		// timer start
-		if ((state_est_state.flight_phase_detection.flight_phase == THRUSTING) || (launch_detect(accel1_val[1], accel2_val[1]) == 1) ){
+		if ((state_est_state.flight_phase_detection.flight_phase == THRUSTING) || (launch_detect(accel1_val, accel2_val) == 1) ){
 			start_timer(&mach_timer, &tick);
 			start_timer(&fail_safe_timer, &tick);
 			start_timer(&fail_safe_timer_main, &tick);
@@ -431,8 +444,11 @@ void scheduler (){
 	// if fail_safe timer has passed, skip to descent flight phase
 	if (check_timer(&fail_safe_timer_main, &tick) == 1) {
 		if (state_est_state.flight_phase_detection.flight_phase < DESCENT){
+			// if the main fail_safe_timer for some reason ends before we're in DESCENT mode
 			state_est_state.flight_phase_detection.flight_phase = DESCENT;
 		} else if (state_est_state.flight_phase_detection.flight_phase == DESCENT) {
+			// after main fail safe timer ends, we jump into RECOVERY mode an initiate main deploy
+			// this happens for example if the barometer values are invalid during descent
 			state_est_state.flight_phase_detection.flight_phase = RECOVERY;
 		}
 	}
@@ -466,17 +482,19 @@ void scheduler (){
 				event = TENDER;
 			}
 
-			if(tick >= TD_fired + 500){
+			// allow 100ms of high-current through igniters
+			// if after 100ms the current is still peaking over 1 Amp, the igniters have fused
+			// this might damage the electronics and drain the battery
+			if(tick >= TD_fired + 100){
 				if ((I_BAT1 >= 1000) || (I_BAT2 >= 1000)){
 					// turn off the pyro channels to save power and protect the circuit board
 					if (DEBUG_PRINT == 1) printf("fused igniters detected!! \n");
 					turn_off_TDs();
+					event = TENDER_DISABLE;
 				}
-				event = TENDER_DISABLE;
 			}
 			break;
 	}
-
 
 
 	// TASK LOGGING

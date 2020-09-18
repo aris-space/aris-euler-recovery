@@ -75,7 +75,7 @@ uint8_t config_baro(struct sht31_dev * t_dev, struct ms5607_dev * p1_dev, struct
 	float t1;
 	float t2;
 	// sample pressure/temperture 100 times
-	for (int i = 0; i < MAX_SETUP_SAMPLE; i++)
+	for (int i = 0; i < MAX_SETUP_SAMPLE + 10; i++)
 	{
 		ms5607_prep_pressure(p1_dev, pbuf);
 		ms5607_prep_pressure(p2_dev, pbuf);
@@ -84,10 +84,13 @@ uint8_t config_baro(struct sht31_dev * t_dev, struct ms5607_dev * p1_dev, struct
 		ms5607_read_pressure(p2_dev, pbuf);
 		ms5607_convert(p1_dev, &p1, &t1);
 		ms5607_convert(p2_dev, &p2, &t2);
-		t1_sum += t1;
-		p1_sum += p1;
-		t2_sum += t2;
-		p2_sum += p2;
+		if (i > 10) {
+			// ignore the first 10 values to let the barometer "warm" up
+			t1_sum += t1;
+			p1_sum += p1;
+			t2_sum += t2;
+			p2_sum += p2;
+		}
 		HAL_Delay(MAX_SETUP_SAMPLE_INTERVAL + 5);
 	}
 	p1_sum /= MAX_SETUP_SAMPLE;
@@ -119,10 +122,11 @@ uint8_t config_baro(struct sht31_dev * t_dev, struct ms5607_dev * p1_dev, struct
 
 	// sample SHT temperature 100 times
 
-	for (int i = 0; i < MAX_SETUP_SAMPLE; i++)
+	for (int i = 0; i < MAX_SETUP_SAMPLE + 10; i++)
 	{
 		sht31_read(t_dev, sht_val, buf);
-		t1_sum += sht_val[1];
+		// ignore the first 10 measurements to let the SHT "warm" up
+		if (i > 10) t1_sum += sht_val[1];
 		HAL_Delay(MAX_SETUP_SAMPLE_INTERVAL);
 	}
 	t1_sum /= MAX_SETUP_SAMPLE;
@@ -146,13 +150,16 @@ uint8_t config_imu(struct icm20601_dev * a1_dev, struct icm20601_dev * a2_dev){
 	float a1_sum[3];
 	float a2_sum[3];
 
-	for (int i = 0; i < MAX_SETUP_SAMPLE; i++)
+	for (int i = 0; i < MAX_SETUP_SAMPLE + 10; i++)
 	{
 		icm20601_read_data(a1_dev, a1_temp);
 		icm20601_read_data(a2_dev, a2_temp);
-		for (int j = 1; j < 4; j++){
-			a1_sum[j] += abs(a1_temp[j]);
-			a2_sum[j] += abs(a2_temp[j]);
+		if (i > 10) {
+			// ignore the first 10 measurements to let the accelerometer "warm" up
+			for (int j = 1; j < 4; j++){
+				a1_sum[j] += abs(a1_temp[j]);
+				a2_sum[j] += abs(a2_temp[j]);
+			}
 		}
 		HAL_Delay(MAX_SETUP_SAMPLE_INTERVAL);
 	}
