@@ -54,6 +54,12 @@ extern "C" {
 
 #define BUFLEN 1024
 
+#define MACH_TIMER 17000
+#define FAIL_SAFE_TIMER 22000
+#define FAIL_SAFE_TIMER_MAIN 240000
+
+#define SECOND_EVENT_AGL 400
+
 #define FAKE_LINE_LEN 1024
 #define FAKE_FILE_LEN 1024
 

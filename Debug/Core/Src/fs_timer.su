@@ -1,0 +1,2 @@
+fs_timer.c:10:6:start_timer	16	static
+fs_timer.c:17:9:check_timer	16	static

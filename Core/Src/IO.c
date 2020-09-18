@@ -9,9 +9,9 @@
 #include "adc.h"
 
 
-void fire_HAWKs(void){
-	HAL_GPIO_WritePin(HAWK1_GPIO_Port, HAWK1_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(HAWK2_GPIO_Port, HAWK2_Pin, GPIO_PIN_SET);
+void fire_HAWKs(uint8_t * armed){
+	if (*armed == 1 ) HAL_GPIO_WritePin(HAWK1_GPIO_Port, HAWK1_Pin, GPIO_PIN_SET);
+	if (*armed == 1 ) HAL_GPIO_WritePin(HAWK2_GPIO_Port, HAWK2_Pin, GPIO_PIN_SET);
 }
 
 void turn_off_HAWKs(void){
@@ -19,9 +19,9 @@ void turn_off_HAWKs(void){
 	HAL_GPIO_WritePin(HAWK2_GPIO_Port, HAWK2_Pin, GPIO_PIN_RESET);
 }
 
-void fire_TDs(void){
-	HAL_GPIO_WritePin(TD1_GPIO_Port, TD1_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(TD2_GPIO_Port, TD2_Pin, GPIO_PIN_SET);
+void fire_TDs(uint8_t * armed){
+	if (*armed == 1 ) HAL_GPIO_WritePin(TD1_GPIO_Port, TD1_Pin, GPIO_PIN_SET);
+	if (*armed == 1 ) HAL_GPIO_WritePin(TD2_GPIO_Port, TD2_Pin, GPIO_PIN_SET);
 }
 
 void turn_off_TDs(void){

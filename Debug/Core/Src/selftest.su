@@ -1,6 +1,8 @@
-selftest.c:11:9:p_sanity_check	16	static
-selftest.c:19:9:t_sanity_check	16	static
-selftest.c:27:8:a_sanity_check	16	static
-selftest.c:37:9:config_baro	80	static
-selftest.c:112:9:config_imu	120	static
-selftest.c:168:9:selftest	4	static
+selftest.c:13:9:p_sanity_check	16	static
+selftest.c:21:9:p_descent_sanity_check	16	static
+selftest.c:29:9:t_sanity_check	16	static
+selftest.c:37:9:a_sanity_check	16	static
+selftest.c:45:9:state_est_sanity_check	24	static
+selftest.c:64:9:config_baro	80	static
+selftest.c:141:9:config_imu	112	static
+selftest.c:184:9:selftest	4	static

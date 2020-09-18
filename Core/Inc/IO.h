@@ -12,9 +12,9 @@
 
 uint32_t adc_buf[8];
 
-extern void fire_HAWKs(void);
+extern void fire_HAWKs(uint8_t * armed);
 extern void turn_off_HAWKs(void);
-extern void fire_TDs(void);
+extern void fire_TDs(uint8_t * armed);
 extern void turn_off_TDs(void);
 extern void init_ADC(void);
 extern void read_ADC(float * out);

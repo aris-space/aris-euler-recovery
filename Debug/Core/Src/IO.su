@@ -1,6 +1,6 @@
-IO.c:12:6:fire_HAWKs	8	static
+IO.c:12:6:fire_HAWKs	16	static
 IO.c:17:6:turn_off_HAWKs	8	static
-IO.c:22:6:fire_TDs	8	static
+IO.c:22:6:fire_TDs	16	static
 IO.c:27:6:turn_off_TDs	8	static
 IO.c:32:6:init_ADC	8	static
 IO.c:37:6:read_ADC	32	static

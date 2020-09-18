@@ -103,6 +103,13 @@
 	.interval = 100, \
   }
 
+enum event_t {
+  NOE = 0,
+  HAWKS = 1,
+  TENDER = 2,
+  TENDER_DISABLE = 3,
+};
+
 typedef struct {
 	uint32_t last_call;
 	uint32_t interval;

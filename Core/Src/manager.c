@@ -18,11 +18,13 @@
 #include "SD.h"
 #include "selftest.h"
 #include "buzzer.h"
+#include "fs_timer.h"
 #include "Sim_Con/state_est.h"
 
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include <stdbool.h>
 
 task_t BARO_TASK = BARO_TASK_INIT();
 task_t SHT_TASK = SHT_TASK_INIT();
@@ -36,6 +38,10 @@ task_t RDY_TASK = RDY_TASK_INIT();
 task_t STAT_TASK = STAT_TASK_INIT();
 task_t SAVE_TASK = SAVE_TASK_INIT();
 task_t PRGM_TASK = PRGM_TASK_INIT();
+
+TIMER mach_timer = MACH_INIT();
+TIMER fail_safe_timer = FAIL_SAFE_INIT();
+TIMER fail_safe_timer_main = FAIL_SAFE_MAIN_INIT();
 
 LED STAT = STAT_INIT();
 LED SAVE = SAVE_INIT();
@@ -109,6 +115,10 @@ state_est_state_t state_est_state = { 0 };
 
 uint8_t FAKE_DATA = 0;
 
+uint8_t CHECK_FLAG = 0;
+
+uint32_t TD_fired = 0;
+
 float TIME[FAKE_FILE_LEN];
 float P1[FAKE_FILE_LEN];
 float P2[FAKE_FILE_LEN];
@@ -119,8 +129,23 @@ float Ax2[FAKE_FILE_LEN];
 float Ay2[FAKE_FILE_LEN];
 float Az2[FAKE_FILE_LEN];
 
-int8_t IMU_SIGN[3] = {1,0,0};
-int8_t ACC_SIGN[3] = {1,0,0};
+float launch_detect_buffer[5];
+
+uint8_t launch_detect(float a1, float a2){
+	for (int i = 1; i < 5; i++){
+		launch_detect_buffer[i-1] = launch_detect_buffer[i-1];
+	}
+	launch_detect_buffer[4] = (a1 + a2) / 2;
+	float sum_a = 0;
+	for (int i = 0; i < 5; i++){
+		sum_a += launch_detect_buffer[i];
+	}
+	sum_a /= 5;
+
+	// if average of acceleration over 5 measurements is higher than 4G, launch has been detected.
+	if (sum_a >= 40) return 1;
+	return 0;
+}
 
 void schedulerinit () {
 	ms5607_init(&BARO1);
@@ -193,7 +218,7 @@ void schedulerinit () {
 	float ground_temperature = 0;
 
 	config_baro(&TEMP, &BARO1, &BARO2, &ground_temperature, &ground_pressure);
-	config_imu(&IMU1, &IMU2, IMU_SIGN, ACC_SIGN);
+	config_imu(&IMU1, &IMU2);
 
 	reset_state_est_state(ground_pressure, ground_temperature, &state_est_state);
 }
@@ -322,42 +347,143 @@ void scheduler (){
 		}
 
 		// call state estimation
+		if (state_est_state.flight_phase_detection.flight_phase < DESCENT){
 
-		state_est_state.state_est_meas.baro_data[0].pressure = p1;
-		state_est_state.state_est_meas.baro_data[0].temperature = t_p1;
-		state_est_state.state_est_meas.baro_data[0].ts = tick;
 
-		state_est_state.state_est_meas.imu_data[0].acc_x = IMU_SIGN[0]*accel1_val[0] + IMU_SIGN[1]*accel1_val[1] + IMU_SIGN[2]*accel1_val[2];
-		state_est_state.state_est_meas.imu_data[0].ts = tick;
+			state_est_state.state_est_meas.baro_data[0].pressure = p1;
+			state_est_state.state_est_meas.baro_data[0].temperature = t_p1;
+			state_est_state.state_est_meas.baro_data[0].ts = tick;
 
-		state_est_state.state_est_meas.baro_data[1].pressure = p2;
-		state_est_state.state_est_meas.baro_data[1].temperature = t_p2;
-		state_est_state.state_est_meas.baro_data[1].ts = tick;
+			state_est_state.state_est_meas.imu_data[0].acc_x = -accel1_val[1];
+			state_est_state.state_est_meas.imu_data[0].ts = tick;
 
-		state_est_state.state_est_meas.imu_data[1].acc_x = IMU_SIGN[0]*accel2_val[0] + IMU_SIGN[1]*accel2_val[1] + IMU_SIGN[2]*accel2_val[2];
-		state_est_state.state_est_meas.imu_data[1].ts = tick;
+			state_est_state.state_est_meas.baro_data[1].pressure = p2;
+			state_est_state.state_est_meas.baro_data[1].temperature = t_p2;
+			state_est_state.state_est_meas.baro_data[1].ts = tick;
 
-		state_est_step(tick, &state_est_state, 1);
+			state_est_state.state_est_meas.imu_data[1].acc_x = -accel2_val[1];
+			state_est_state.state_est_meas.imu_data[1].ts = tick;
 
-		// timer section
+			state_est_step(tick, &state_est_state, true);
+		} else {
+			float p[2];
+			float altitude[2] = {0,0};
+			p[0] = p1;
+			p[1] = p2;
+			bool p_active[2] = {p_descent_sanity_check(&p1), p_descent_sanity_check(&p2)};
 
-		// if apogee
-		// fire_HAWKs();
+			pressure2altitudeAGL(&state_est_state.env, 2,  p, p_active, altitude);
 
-		// if second event
-		// fire_TDs();
+			if (p_active[0] + p_active[1] != 0){
+				// calculate mean altitude if both barometer readings are valid
+				alt = (altitude[0] + altitude[0])/ (p_active[0] + p_active[1]);
+			} else {
+				// if both barometer readings are invalid
+				alt = 0;
+			}
 
-		// if second event and current high (fused an iginiter)
-		// turn off the pyro channels to save power and protect the circuit board
-		// turn_off_TDs();
+			if ((alt < SECOND_EVENT_AGL) && (0 < alt)) {
+				if (event == NOE)
+				{
+					// initiate separation if no separation has been initiated so far
+					state_est_state.flight_phase_detection.flight_phase = DESCENT;
+				} else {
+					// second event
+					state_est_state.flight_phase_detection.flight_phase = RECOVERY;
+				}
+			}
+		}
+
+		// timer start
+		if ((state_est_state.flight_phase_detection.flight_phase == THRUSTING) || (launch_detect(accel1_val[1], accel2_val[1]) == 1) ){
+			start_timer(&mach_timer, &tick);
+			start_timer(&fail_safe_timer, &tick);
+			start_timer(&fail_safe_timer_main, &tick);
+		}
+
+		if ((tick > 30000) && (CHECK_FLAG == 0)){
+
+			// Perform sanity check of state estimation 30 seconds after bootup!
+
+			float check_a = -accel1_val[1];
+			float check_h = state_est_state.state_est_data.position_world[2];
+			float check_v = state_est_state.state_est_data.velocity_rocket[0];
+			if (state_est_sanity_check(&check_a, &check_h, &check_v) == 0){
+				if (DEBUG_PRINT == 1) printf("sanity check for state estimation failed! \n");
+			}
+
+			check_a = -accel2_val[1];
+			if (state_est_sanity_check(&check_a, &check_h, &check_v) == 0){
+				if (DEBUG_PRINT == 1) printf("sanity check for state estimation failed! \n");
+			}
+			CHECK_FLAG = 1;
+		}
 
 	}
+
+
+	// if mach timer has passed, software arm the system
+	if (check_timer(&mach_timer, &tick) == 1) armed = 1;
+
+	// if fail_safe timer has passed, skip to descent flight phase
+	if (check_timer(&fail_safe_timer, &tick) == 1) state_est_state.flight_phase_detection.flight_phase = DESCENT;
+
+	// if fail_safe timer has passed, skip to descent flight phase
+	if (check_timer(&fail_safe_timer_main, &tick) == 1) {
+		if (state_est_state.flight_phase_detection.flight_phase < DESCENT){
+			state_est_state.flight_phase_detection.flight_phase = DESCENT;
+		} else if (state_est_state.flight_phase_detection.flight_phase == DESCENT) {
+			state_est_state.flight_phase_detection.flight_phase = RECOVERY;
+		}
+	}
+
+
+	// act according to flight phase
+	switch(state_est_state.flight_phase_detection.flight_phase){
+
+		case IDLE:
+			break;
+		case AIRBRAKE_TEST:
+			break;
+		case THRUSTING:
+			break;
+		case COASTING:
+			break;
+		case DESCENT:
+			// apogee
+			fire_HAWKs(&armed);
+			event = HAWKS;
+			break;
+		case BALLISTIC_DESCENT:
+			// oh-oh...
+			fire_HAWKs(&armed);
+			event = HAWKS;
+		case RECOVERY:
+			// second event
+			if (TD_fired == 0){
+				fire_TDs(&armed);
+				TD_fired = tick;
+				event = TENDER;
+			}
+
+			if(tick >= TD_fired + 500){
+				if ((I_BAT1 >= 1000) || (I_BAT2 >= 1000)){
+					// turn off the pyro channels to save power and protect the circuit board
+					if (DEBUG_PRINT == 1) printf("fused igniters detected!! \n");
+					turn_off_TDs();
+				}
+				event = TENDER_DISABLE;
+			}
+			break;
+	}
+
+
 
 	// TASK LOGGING
 	if(tick >= getNextExecution(&LOG_TASK)){
 		LOG_TASK.last_call = tick;
 		sprintf(buffer,"%ld, %d ,%d, %d, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f\n",
-				tick,armed,event,flight_phase, alt, velocity, t_val[1],t_val[0],t_cpu,t_p1,t_p2,accel1_val[0],accel2_val[0],p1,p2,accel1_val[1],accel1_val[2],accel1_val[3],accel1_val[4],accel1_val[5],accel1_val[6],accel2_val[1],accel2_val[2],accel2_val[3],accel2_val[4],accel2_val[5],accel2_val[6],accel[0],accel[1],accel[2],I_BAT1,I_BAT2,V_BAT1,V_BAT2,V_LDR,V_TD1,V_TD2);
+				tick, armed, event, flight_phase, alt, velocity, t_val[1],t_val[0],t_cpu,t_p1,t_p2,accel1_val[0],accel2_val[0],p1,p2,accel1_val[1],accel1_val[2],accel1_val[3],accel1_val[4],accel1_val[5],accel1_val[6],accel2_val[1],accel2_val[2],accel2_val[3],accel2_val[4],accel2_val[5],accel2_val[6],accel[0],accel[1],accel[2],I_BAT1,I_BAT2,V_BAT1,V_BAT2,V_LDR,V_TD1,V_TD2);
 
 		write_to_SD(FILE_NAME, buffer);
 	}

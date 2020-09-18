@@ -17,8 +17,14 @@
 #define MAX_SETUP_SAMPLE 100
 #define MAX_SETUP_SAMPLE_INTERVAL 10
 
+extern uint8_t t_sanity_check(float * t);
+extern uint8_t p_sanity_check(float * p);
+extern uint8_t p_descent_sanity_check(float * p);
+extern uint8_t a_sanity_check(float * a);
+extern uint8_t state_est_sanity_check(float * h, float * a, float * v);
+
 extern uint8_t config_baro(struct sht31_dev * t_dev, struct ms5607_dev * p1_dev, struct ms5607_dev * p2_dev, float * t, float * p);
-extern uint8_t config_imu(struct icm20601_dev * a1_dev, struct icm20601_dev * a2_dev, int8_t * imu_sign, int8_t * acc_sign);
+extern uint8_t config_imu(struct icm20601_dev * a1_dev, struct icm20601_dev * a2_dev);
 extern uint8_t selftest(void);
 
 

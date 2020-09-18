@@ -7,9 +7,19 @@
 #include "selftest.h"
 #include "buzzer.h"
 #include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
 
 uint8_t p_sanity_check(float * p){
 	if ((*p < 110000) | (*p > 80000)) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+uint8_t p_descent_sanity_check(float * p){
+	if ((*p < 110000) | (*p > 20000)) {
 		return 1;
 	} else {
 		return 0;
@@ -24,14 +34,31 @@ uint8_t t_sanity_check(float * t){
 	}
 }
 
-int8_t a_sanity_check(float * a){
+uint8_t a_sanity_check(float * a){
 	if ((*a < 10) | (*a > 8)) {
 		return 1;
-	} else if ((*a > -10) | (*a < -8)){
-		return -1;
 	} else {
 		return 0;
 	}
+}
+
+uint8_t state_est_sanity_check(float * h, float * a, float * v){
+	if (a_sanity_check(a) == 0){
+		if (DEBUG_PRINT == 1) printf("state est accel out of bounds. a = %4.2f \n",*a);
+		return 0;
+	}
+
+	if ((*h > 50) | (*h < -50)) {
+		if (DEBUG_PRINT == 1) printf("state est altitude out of bounds. h = %4.2f \n",*h);
+		return 0;
+	}
+
+	if ((*v > 10) | (*v < -10)) {
+		if (DEBUG_PRINT == 1) printf("state est velocity out of bounds. v = %4.2f \n",*v);
+		return 0;
+	}
+
+	return 1;
 }
 
 uint8_t config_baro(struct sht31_dev * t_dev, struct ms5607_dev * p1_dev, struct ms5607_dev * p2_dev, float * t, float * p){
@@ -107,9 +134,11 @@ uint8_t config_baro(struct sht31_dev * t_dev, struct ms5607_dev * p1_dev, struct
 		// if SHT is available, use SHT temperature value for environement
 		*t = t1_sum;
 	}
+
+	return 1;
 }
 
-uint8_t config_imu(struct icm20601_dev * a1_dev, struct icm20601_dev * a2_dev, int8_t * imu_sign, int8_t * acc_sign){
+uint8_t config_imu(struct icm20601_dev * a1_dev, struct icm20601_dev * a2_dev){
 
 	float a1_temp[7];
 	float a2_temp[7];
@@ -122,8 +151,8 @@ uint8_t config_imu(struct icm20601_dev * a1_dev, struct icm20601_dev * a2_dev, i
 		icm20601_read_data(a1_dev, a1_temp);
 		icm20601_read_data(a2_dev, a2_temp);
 		for (int j = 1; j < 4; j++){
-			a1_sum[j] += a1_temp[j];
-			a2_sum[j] += a2_temp[j];
+			a1_sum[j] += abs(a1_temp[j]);
+			a2_sum[j] += abs(a2_temp[j]);
 		}
 		HAL_Delay(MAX_SETUP_SAMPLE_INTERVAL);
 	}
@@ -137,21 +166,9 @@ uint8_t config_imu(struct icm20601_dev * a1_dev, struct icm20601_dev * a2_dev, i
 		a2_sum[j] /= MAX_SETUP_SAMPLE;
 		if (a_sanity_check(&a1_sum[j]) == 1){
 			imu1_state ++;
-			imu_sign[j] = 1;
-		} else if (a_sanity_check(&a1_sum[j]) == -1){
-			imu1_state ++;
-			imu_sign[j] = -1;
-		} else {
-			imu_sign[j] = 0;
 		}
 		if (a_sanity_check(&a2_sum[j]) == 1){
 			imu2_state ++;
-			imu_sign[j] = 1;
-		} else if (a_sanity_check(&a2_sum[j]) == -1){
-			imu1_state ++;
-			imu_sign[j] = -1;
-		} else {
-			imu_sign[j] = 0;
 		}
 	}
 
@@ -161,11 +178,14 @@ uint8_t config_imu(struct icm20601_dev * a1_dev, struct icm20601_dev * a2_dev, i
 		if (DEBUG_PRINT == 1) printf("IMU2: %d \n", imu2_state);
 		return 0;
 	}
-	if (DEBUG_PRINT == 1) printf("SIGN: x = %d, y = %d, z = %d \n", imu_sign[0],imu_sign[1],imu_sign[2]);
 	return 1;
 }
 
 uint8_t selftest(void){
+
+	//check battery power,
+	//check TD voltage
+	//check LDR sensor
 
 	return 1;
 }
