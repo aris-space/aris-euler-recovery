@@ -133,7 +133,7 @@ float launch_detect_buffer[5];
 
 uint8_t launch_detect(float * a1, float * a2){
 	for (int i = 1; i < 5; i++){
-		launch_detect_buffer[i-1] = launch_detect_buffer[i-1];
+		launch_detect_buffer[i-1] = launch_detect_buffer[i];
 	}
 	launch_detect_buffer[4] = (sqrt(a1[1]*a1[1] + a1[2]*a1[2] + a1[3]*a1[3]) + sqrt(a2[1]*a2[1] + a2[2]*a2[2] + a2[3]*a2[3])) / 2;
 	float sum_a = 0;
