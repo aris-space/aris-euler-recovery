@@ -1,7 +1,7 @@
 state_est.c:3:6:reset_state_est_state	24	static
-state_est.c:23:6:state_est_step	40	static
-state_est.c:51:6:update_state_est_data	16	static
-state_est.c:59:6:process_measurements	88	static
-state_est.c:147:6:select_noise_models	80	static
-state_est.c:196:6:sensor_elimination_by_stdev	64	static
-state_est.c:231:6:sensor_elimination_by_extrapolation	88	static
+state_est.c:23:6:state_est_step	24	static
+state_est.c:50:6:update_state_est_data	24	static
+state_est.c:59:6:process_measurements	96	static
+state_est.c:160:6:select_noise_models	80	static
+state_est.c:210:6:sensor_elimination_by_stdev	64	static
+state_est.c:245:6:sensor_elimination_by_extrapolation	88	static

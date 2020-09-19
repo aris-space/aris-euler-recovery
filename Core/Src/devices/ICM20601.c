@@ -220,7 +220,7 @@ void icm20601_read_gyro(struct icm20601_dev * dev, float *gyro){
 	float gyro_sensitivity;
 	int16_t gyro_raw[3] = { 0 };
 
-	gyro_sensitivity = _get_gyro_sensitivity(dev->accel_g);
+	gyro_sensitivity = _get_gyro_sensitivity(dev->gyro_dps);
 
   	icm20601_read_gyro_raw(dev, gyro_raw);
 
@@ -264,7 +264,7 @@ void icm20601_read_data(struct icm20601_dev * dev, float * buf)
 	float gyro_sensitivity;
 	int16_t gyro_raw[3] = { 0 };
 
-	gyro_sensitivity = _get_gyro_sensitivity(dev->accel_g);
+	gyro_sensitivity = _get_gyro_sensitivity(dev->gyro_dps);
 
   	icm20601_read_gyro_raw(dev, gyro_raw);
 

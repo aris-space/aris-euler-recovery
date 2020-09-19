@@ -18,6 +18,7 @@
 #include "SD.h"
 #include "selftest.h"
 #include "buzzer.h"
+#include "dwt_stm32_delay.h"
 #include "fs_timer.h"
 #include "Sim_Con/state_est.h"
 
@@ -149,6 +150,7 @@ uint8_t launch_detect(float * a1, float * a2){
 
 void schedulerinit () {
 
+
 	//initialize all devices
 	ms5607_init(&BARO1);
 	ms5607_init(&BARO2);
@@ -158,7 +160,11 @@ void schedulerinit () {
 	h3l_init(&ACCEL);
 	init_ADC();
 
+	DWT_Delay_Init();
+
+
 	// cycle through LEDs
+
 	turn_on(&STAT);
 	HAL_Delay(300);
 	turn_on(&SAVE);
@@ -214,6 +220,7 @@ void schedulerinit () {
 	log_to_SD(LOG_NAME, buffer);
 
 	//coffin_dance(1);
+	take_on_me();
 	take_on_me();
 
 	if (FAKE_DATA == 1)
@@ -357,55 +364,24 @@ void scheduler (){
 		}
 
 		// call state estimation
-		if (state_est_state.flight_phase_detection.flight_phase < DESCENT){
 
-			// feed in sensor values
-			state_est_state.state_est_meas.baro_data[0].pressure = p1;
-			state_est_state.state_est_meas.baro_data[0].temperature = t_p1;
-			state_est_state.state_est_meas.baro_data[0].ts = tick;
+		// feed in sensor values
+		state_est_state.state_est_meas.baro_data[0].pressure = p1;
+		state_est_state.state_est_meas.baro_data[0].temperature = t_p1;
+		state_est_state.state_est_meas.baro_data[0].ts = tick;
 
-			state_est_state.state_est_meas.imu_data[0].acc_x = -accel1_val[1];
-			state_est_state.state_est_meas.imu_data[0].ts = tick;
+		state_est_state.state_est_meas.imu_data[0].acc_x = -accel1_val[1];
+		state_est_state.state_est_meas.imu_data[0].ts = tick;
 
-			state_est_state.state_est_meas.baro_data[1].pressure = p2;
-			state_est_state.state_est_meas.baro_data[1].temperature = t_p2;
-			state_est_state.state_est_meas.baro_data[1].ts = tick;
+		state_est_state.state_est_meas.baro_data[1].pressure = p2;
+		state_est_state.state_est_meas.baro_data[1].temperature = t_p2;
+		state_est_state.state_est_meas.baro_data[1].ts = tick;
 
-			state_est_state.state_est_meas.imu_data[1].acc_x = -accel2_val[1];
-			state_est_state.state_est_meas.imu_data[1].ts = tick;
+		state_est_state.state_est_meas.imu_data[1].acc_x = -accel2_val[1];
+		state_est_state.state_est_meas.imu_data[1].ts = tick;
 
-			state_est_step(tick, &state_est_state, true);
-		} else {
+		state_est_step(tick, &state_est_state, true);
 
-			// ignore state estimation for descent, calculate altitude from barometer readings only.
-
-			float p[2];
-			float altitude[2] = {0,0};
-			p[0] = p1;
-			p[1] = p2;
-			bool p_active[2] = {p_descent_sanity_check(&p1), p_descent_sanity_check(&p2)};
-
-			pressure2altitudeAGL(&state_est_state.env, 2,  p, p_active, altitude);
-
-			if (p_active[0] + p_active[1] != 0){
-				// calculate mean altitude if both barometer readings are valid
-				alt = (altitude[0] + altitude[0])/ (p_active[0] + p_active[1]);
-			} else {
-				// if both barometer readings are invalid
-				alt = 0;
-			}
-
-			if ((alt < SECOND_EVENT_AGL) && (0 < alt)) {
-				if (event == NOE)
-				{
-					// initiate separation if no separation has been initiated so far
-					state_est_state.flight_phase_detection.flight_phase = DESCENT;
-				} else {
-					// second event
-					state_est_state.flight_phase_detection.flight_phase = RECOVERY;
-				}
-			}
-		}
 
 		// timer start
 		if ((state_est_state.flight_phase_detection.flight_phase == THRUSTING) || (launch_detect(accel1_val, accel2_val) == 1) ){
@@ -417,6 +393,7 @@ void scheduler (){
 		if ((tick > 30000) && (CHECK_FLAG == 0)){
 
 			// Perform sanity check of state estimation 30 seconds after bootup!
+			// this is in steady state on the launchpad
 
 			float check_a = -accel1_val[1];
 			float check_h = state_est_state.state_est_data.position_world[2];
@@ -439,17 +416,17 @@ void scheduler (){
 	if (check_timer(&mach_timer, &tick) == 1) armed = 1;
 
 	// if fail_safe timer has passed, skip to descent flight phase
-	if (check_timer(&fail_safe_timer, &tick) == 1) state_est_state.flight_phase_detection.flight_phase = DESCENT;
+	if (check_timer(&fail_safe_timer, &tick) == 1) state_est_state.flight_phase_detection.flight_phase = DROGUE_DESCENT;
 
 	// if fail_safe timer has passed, skip to descent flight phase
 	if (check_timer(&fail_safe_timer_main, &tick) == 1) {
-		if (state_est_state.flight_phase_detection.flight_phase < DESCENT){
+		if (state_est_state.flight_phase_detection.flight_phase < DROGUE_DESCENT){
 			// if the main fail_safe_timer for some reason ends before we're in DESCENT mode
-			state_est_state.flight_phase_detection.flight_phase = DESCENT;
-		} else if (state_est_state.flight_phase_detection.flight_phase == DESCENT) {
+			state_est_state.flight_phase_detection.flight_phase = DROGUE_DESCENT;
+		} else if (state_est_state.flight_phase_detection.flight_phase == DROGUE_DESCENT) {
 			// after main fail safe timer ends, we jump into RECOVERY mode an initiate main deploy
 			// this happens for example if the barometer values are invalid during descent
-			state_est_state.flight_phase_detection.flight_phase = RECOVERY;
+			state_est_state.flight_phase_detection.flight_phase = DROGUE_DESCENT;
 		}
 	}
 
@@ -465,7 +442,7 @@ void scheduler (){
 			break;
 		case COASTING:
 			break;
-		case DESCENT:
+		case DROGUE_DESCENT:
 			// apogee
 			fire_HAWKs(&armed);
 			event = HAWKS;
@@ -474,7 +451,9 @@ void scheduler (){
 			// oh-oh...
 			fire_HAWKs(&armed);
 			event = HAWKS;
-		case RECOVERY:
+			state_est_state.flight_phase_detection.flight_phase = DROGUE_DESCENT;
+			break;
+		case MAIN_DESCENT:
 			// second event
 			if (TD_fired == 0){
 				fire_TDs(&armed);
@@ -493,6 +472,12 @@ void scheduler (){
 					event = TENDER_DISABLE;
 				}
 			}
+			break;
+		case TOUCHDOWN:
+			play(440,100);
+			play(659.25,100);
+			play(880,200);
+			HAL_Delay(600);
 			break;
 	}
 

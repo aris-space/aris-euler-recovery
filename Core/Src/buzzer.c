@@ -8,8 +8,13 @@
 
 #include "buzzer.h"
 #include "main.h"
+#include "devices/LED.h"
 #include "dwt_stm32_delay.h"
 
+LED BSTAT = STAT_INIT();
+LED BSAVE = SAVE_INIT();
+LED BPRGM = PRGM_INIT();
+LED BRDY = RDY_INIT();
 
 float C = 523.25;
 float Cis = 554.37;
@@ -24,10 +29,12 @@ float A = 880.0;
 float Ais = 932.33;
 float B = 987.77;
 
+#define SF 1.5
 
-float sixteenth = 128.0;
-float eighth = 256.0;
-float fourth = 512.0;
+
+float sixteenth = 128.0 / SF;
+float eighth = 256.0 / SF;
+float fourth = 512.0 / SF;
 
 
 void play(float freq, float time)
@@ -43,47 +50,108 @@ void play(float freq, float time)
 
 void take_on_me(void)
 {
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	play(2 * Fis,sixteenth);
 	HAL_Delay(sixteenth);
 	play(2 * Fis,sixteenth);
 	HAL_Delay(sixteenth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	play(2 * D,eighth);
 	play(B,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	HAL_Delay(eighth);
 	play(B,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	HAL_Delay(eighth);
 	play(2 * E,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	HAL_Delay(eighth);
 	play(2 * E,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	HAL_Delay(eighth);
 	play(2 * E,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	play(2 * Gis,sixteenth);
 	HAL_Delay(sixteenth);
 	play(2 * Gis,sixteenth);
 	HAL_Delay(sixteenth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	play(2 * A,eighth);
-	play(4 * Cis,eighth);
+	play(3 * Cis,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	play(2 * A,sixteenth);
 	HAL_Delay(sixteenth);
 	play(2 * A,sixteenth);
 	HAL_Delay(sixteenth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	play(2 * A,sixteenth);
 	HAL_Delay(sixteenth);
 	play(2 * E,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	HAL_Delay(eighth);
 	play(2 * D,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	HAL_Delay(eighth);
 	play(2 * Fis,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	HAL_Delay(eighth);
 	play(2 * Fis,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	HAL_Delay(eighth);
 	play(2 * Fis,eighth);
-	HAL_Delay(eighth);
-	play(2 * Fis,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	play(2 * E,sixteenth);
 	HAL_Delay(sixteenth);
 	play(2 * E,sixteenth);
 	HAL_Delay(sixteenth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+
 	play(2 * Fis,eighth);
 	play(2 * E,eighth);
 

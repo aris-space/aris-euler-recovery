@@ -31,7 +31,7 @@ Core/Src/buzzer.o: ../Core/Src/buzzer.c ../Core/Inc/buzzer.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sd.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_sdmmc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
- ../Core/Inc/dwt_stm32_delay.h
+ ../Core/Inc/devices/LED.h ../Core/Inc/dwt_stm32_delay.h
 
 ../Core/Inc/buzzer.h:
 
@@ -100,5 +100,7 @@ Core/Src/buzzer.o: ../Core/Src/buzzer.c ../Core/Inc/buzzer.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_sdmmc.h:
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
+
+../Core/Inc/devices/LED.h:
 
 ../Core/Inc/dwt_stm32_delay.h:

@@ -10,7 +10,11 @@
 #include <math.h>
 #include <stdlib.h>
 
+
+// these sanity checks are performed during steady state on the launch pad.
+
 uint8_t p_sanity_check(float * p){
+	// sanity check of the pressure value on the launchpad
 	if ((*p < 110000) | (*p > 80000)) {
 		return 1;
 	} else {
@@ -18,15 +22,8 @@ uint8_t p_sanity_check(float * p){
 	}
 }
 
-uint8_t p_descent_sanity_check(float * p){
-	if ((*p < 110000) | (*p > 20000)) {
-		return 1;
-	} else {
-		return 0;
-	}
-}
-
 uint8_t t_sanity_check(float * t){
+	// sanity check of the temperature value on the launchpad
 	if ((*t < 80) | (*t > 1)) {
 		return 1;
 	} else {
@@ -35,6 +32,7 @@ uint8_t t_sanity_check(float * t){
 }
 
 uint8_t a_sanity_check(float * a){
+	// sanity check of the acceleration value on the launchpad
 	if ((*a < 10) | (*a > 8)) {
 		return 1;
 	} else {
@@ -43,6 +41,7 @@ uint8_t a_sanity_check(float * a){
 }
 
 uint8_t state_est_sanity_check(float * h, float * a, float * v){
+	// sanity check of the altitude, velocity and acceleration value on the launchpad
 	if (a_sanity_check(a) == 0){
 		if (DEBUG_PRINT == 1) printf("state est accel out of bounds. a = %4.2f \n",*a);
 		return 0;

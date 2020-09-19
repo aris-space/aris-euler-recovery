@@ -9,6 +9,7 @@
 #define INC_MANAGER_H_
 
 #include "main.h"
+#include "Sim_Con/state_est_config.h"
 
 #define BARO 3
 #define SHT 100
@@ -19,7 +20,7 @@
 #define LOG_INT 0
 
 // interval of state estimation call
-#define STATE_EST_INT 20
+#define STATE_EST_INT 1000/STATE_ESTIMATION_FREQUENCY
 
 // BARO TASK
 #define BARO_TASK_INIT() \

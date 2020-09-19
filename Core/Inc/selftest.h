@@ -19,7 +19,6 @@
 
 extern uint8_t t_sanity_check(float * t);
 extern uint8_t p_sanity_check(float * p);
-extern uint8_t p_descent_sanity_check(float * p);
 extern uint8_t a_sanity_check(float * a);
 extern uint8_t state_est_sanity_check(float * h, float * a, float * v);
 
