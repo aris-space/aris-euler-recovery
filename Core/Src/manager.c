@@ -334,7 +334,6 @@ void scheduler (){
 	}
 
 	// TASK STATE ESTIMATION
-
 	if(tick >= getNextExecution(&STATE_EST_TASK)){
 		STATE_EST_TASK.last_call = tick;
 

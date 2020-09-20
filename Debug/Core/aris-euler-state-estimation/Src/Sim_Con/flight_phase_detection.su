@@ -1,2 +1,2 @@
 flight_phase_detection.c:3:6:detect_flight_phase	16	static
-flight_phase_detection.c:122:6:reset_flight_phase_detection	16	static
+flight_phase_detection.c:125:6:reset_flight_phase_detection	16	static

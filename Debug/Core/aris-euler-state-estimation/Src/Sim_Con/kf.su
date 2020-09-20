@@ -1,4 +1,4 @@
-kf.c:3:6:reset_kf_state	256	static
-kf.c:69:6:kf_prediction	32	static
-kf.c:84:6:select_kf_observation_matrices	24	static
-kf.c:100:6:kf_update	32	static
+kf.c:3:6:reset_kf_state	280	static
+kf.c:76:6:kf_prediction	32	static
+kf.c:91:6:select_kf_observation_matrices	24	static
+kf.c:107:6:kf_update	32	static
