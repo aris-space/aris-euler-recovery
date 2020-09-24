@@ -13,7 +13,6 @@
 
 #define BARO 3
 #define SHT 100
-#define LOGGING 100
 #define IMU 0
 #define ACC 0
 #define ADC_INT 20

@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 FRESULT fresult;  // to store the result
 UINT br, bw;   // file read/write count
@@ -207,31 +208,26 @@ float extract_from_str(char* buffer, uint8_t *start, uint8_t *end){
 	}
 	*end = y;
 	strncpy(c, buffer + x, y - x);
-
-	return strtof(c,NULL);
+	float ret = strtof(c,NULL);
+	return ret;
 }
 
 void read_from_SD(char * FILE_NAME, float * TIME, float * P1, float * P2, float * Ax1, float * Ay1, float * Az1, float * Ax2, float * Ay2, float * Az2){
 
-	char buffer[FAKE_LINE_LEN];
+	printf("reading FF file: \n");
+	fresult = f_open(&fake_file, FILE_NAME, FA_READ);
+	printf("trying to read the file, error-code: %d \n",fresult);
 
-	for (int i = 0; i < FAKE_FILE_LEN; i++){
+	char buffer[FAKE_LINE_LEN];
+	uint8_t x = 0;
+	uint8_t y = 0;
+	for (int i = 1; i < FAKE_FILE_LEN; i++){
 	        f_gets(buffer, f_size(&fake_file), &fake_file);
 	        printf("reading line: %d  \n",i);
-	        uint8_t x = 0;
-	        uint8_t y = 0;
+	        x = 0;
+	        y = 0;
 
 			TIME[i] = extract_from_str(buffer, &x, &y);
-
-			x = y + 1;
-			y = y + 1;
-
-			P1[i] = extract_from_str(buffer, &x, &y);
-
-			x = y + 1;
-			y = y + 1;
-
-			P2[i] = extract_from_str(buffer, &x, &y);
 
 			x = y + 1;
 			y = y + 1;
@@ -261,6 +257,18 @@ void read_from_SD(char * FILE_NAME, float * TIME, float * P1, float * P2, float 
 	 		x = y + 1;
 			y = y + 1;
 
+			Az2[i] = extract_from_str(buffer, &x, &y);
+
+			x = y + 1;
+			y = y + 1;
+
+			P1[i] = extract_from_str(buffer, &x, &y);
+
+			x = y + 1;
+			y = y + 1;
+
+			//printf("%4.2f,%4.2f,%4.2f,%4.2f,%4.2f,%4.2f,%4.2f,%4.2f,%4.2f \n",TIME[i],P1[i],P2[i],Ax1[i],Ay1[i],Az1[i],Ax2[i],Ay2[i],Az2[i]);
+
 		    char c[30];
 
 			for (int j=0; j<30; j++) {
@@ -269,7 +277,7 @@ void read_from_SD(char * FILE_NAME, float * TIME, float * P1, float * P2, float 
 
 			strncpy(c, buffer + x, 10);
 
-	 		Az2[i] = strtof(c,NULL);
+	 		P2[i] = strtof(c,NULL);
 	    }
 
 		// Close file

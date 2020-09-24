@@ -15,7 +15,7 @@
 
 uint8_t p_sanity_check(float * p){
 	// sanity check of the pressure value on the launchpad
-	if ((*p < 110000) | (*p > 80000)) {
+	if ((*p < 110000) && (*p > 80000)) {
 		return 1;
 	} else {
 		return 0;
@@ -24,7 +24,7 @@ uint8_t p_sanity_check(float * p){
 
 uint8_t t_sanity_check(float * t){
 	// sanity check of the temperature value on the launchpad
-	if ((*t < 80) | (*t > 1)) {
+	if ((*t < 80) && (*t > 1)) {
 		return 1;
 	} else {
 		return 0;
@@ -33,7 +33,7 @@ uint8_t t_sanity_check(float * t){
 
 uint8_t a_sanity_check(float * a){
 	// sanity check of the acceleration value on the launchpad
-	if ((*a < 10) | (*a > 8)) {
+	if ((*a < 10) && (*a > 8)) {
 		return 1;
 	} else {
 		return 0;
@@ -83,7 +83,7 @@ uint8_t config_baro(struct sht31_dev * t_dev, struct ms5607_dev * p1_dev, struct
 		ms5607_read_pressure(p2_dev, pbuf);
 		ms5607_convert(p1_dev, &p1, &t1);
 		ms5607_convert(p2_dev, &p2, &t2);
-		if (i > 10) {
+		if (i >= 10) {
 			// ignore the first 10 values to let the barometer "warm" up
 			t1_sum += t1;
 			p1_sum += p1;
@@ -95,7 +95,12 @@ uint8_t config_baro(struct sht31_dev * t_dev, struct ms5607_dev * p1_dev, struct
 	p1_sum /= MAX_SETUP_SAMPLE;
 	t1_sum /= MAX_SETUP_SAMPLE;
 	p2_sum /= MAX_SETUP_SAMPLE;
-	t1_sum /= MAX_SETUP_SAMPLE;
+	t2_sum /= MAX_SETUP_SAMPLE;
+
+	printf("p1: %4.2f \n", p1_sum);
+	printf("p2: %4.2f \n", p2_sum);
+	printf("t1: %4.2f \n", t1_sum);
+	printf("t2: %4.2f \n", t2_sum);
 
 	if (!t_sanity_check(&t1_sum)){
 		if (DEBUG_PRINT == 1) printf("Temperature of BARO 1 out of bounds. abort. \n");
@@ -125,7 +130,7 @@ uint8_t config_baro(struct sht31_dev * t_dev, struct ms5607_dev * p1_dev, struct
 	{
 		sht31_read(t_dev, sht_val, buf);
 		// ignore the first 10 measurements to let the SHT "warm" up
-		if (i > 10) t1_sum += sht_val[1];
+		if (i >= 10) t1_sum += sht_val[0];
 		HAL_Delay(MAX_SETUP_SAMPLE_INTERVAL);
 	}
 	t1_sum /= MAX_SETUP_SAMPLE;
@@ -137,6 +142,9 @@ uint8_t config_baro(struct sht31_dev * t_dev, struct ms5607_dev * p1_dev, struct
 		// if SHT is available, use SHT temperature value for environement
 		*t = t1_sum;
 	}
+
+	if (DEBUG_PRINT == 1) printf("Config pressure = %4.2f \n",*p);
+	if (DEBUG_PRINT == 1) printf("Config temp = %4.2f \n",*t);
 
 	return 1;
 }
@@ -153,11 +161,11 @@ uint8_t config_imu(struct icm20601_dev * a1_dev, struct icm20601_dev * a2_dev){
 	{
 		icm20601_read_data(a1_dev, a1_temp);
 		icm20601_read_data(a2_dev, a2_temp);
-		if (i > 10) {
+		if (i >= 10) {
 			// ignore the first 10 measurements to let the accelerometer "warm" up
 			for (int j = 1; j < 4; j++){
-				a1_sum[j] += abs(a1_temp[j]);
-				a2_sum[j] += abs(a2_temp[j]);
+				a1_sum[j-1] += abs(a1_temp[j]);
+				a2_sum[j-1] += abs(a2_temp[j]);
 			}
 		}
 		HAL_Delay(MAX_SETUP_SAMPLE_INTERVAL);
