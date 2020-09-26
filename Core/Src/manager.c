@@ -150,7 +150,6 @@ uint8_t launch_detect(float * a1, float * a2){
 
 void schedulerinit () {
 
-
 	//initialize all devices
 	ms5607_init(&BARO1);
 	ms5607_init(&BARO2);
@@ -173,6 +172,8 @@ void schedulerinit () {
 	HAL_Delay(300);
 	turn_on(&RDY);
 	HAL_Delay(300);
+
+	stay_alive();
 
 	turn_off(&STAT);
 	turn_off(&SAVE);
@@ -220,7 +221,7 @@ void schedulerinit () {
 	log_to_SD(LOG_NAME, buffer);
 
 	//coffin_dance(1);
-	//take_on_me();
+	take_on_me();
 	//take_on_me();
 
 	if (FAKE_DATA == 1)
@@ -228,6 +229,20 @@ void schedulerinit () {
 		// read in fake data
 		read_from_SD("FDATASS.CSV", TIME, P1, P2, Ax1, Ay1, Az1, Ax2, Ay2, Az2);
 	}
+
+	// selftest
+
+	read_ADC(adc_dat);
+	V_TD1 = adc_dat[0];
+	V_TD2 = adc_dat[1];
+	V_LDR = adc_dat[2];
+	I_BAT1 = adc_dat[3];
+	I_BAT2 = adc_dat[4];
+	V_BAT1 = adc_dat[5];
+	V_BAT2 = adc_dat[6];
+	t_cpu = adc_dat[7];
+
+	selftest(V_TD1, V_TD2, V_BAT1, V_BAT2, V_LDR);
 
 	// initialize state estimation with environment values
 
@@ -425,7 +440,6 @@ void scheduler (){
 
 	}
 
-	/*
 
 	// if mach timer has passed, software arm the system
 	if (check_timer(&mach_timer, &tick) == 1) armed = 1;
@@ -437,11 +451,6 @@ void scheduler (){
 			// if the main fail_safe_timer for some reason ends before we're in DESCENT mode
 			state_est_state.flight_phase_detection.flight_phase = DROGUE_DESCENT;
 			printf("TIMER FS OVERWRITING WITH DROGUE\n");
-		} else if (state_est_state.flight_phase_detection.flight_phase == DROGUE_DESCENT) {
-			// after main fail safe timer ends, we jump into RECOVERY mode an initiate main deploy
-			// this happens for example if the barometer values are invalid during descent
-			state_est_state.flight_phase_detection.flight_phase = MAIN_DESCENT;
-			printf("TIMER FS OVERWRITING WITH DROGUE\n");
 		}
 	}
 
@@ -452,14 +461,15 @@ void scheduler (){
 			// if the main fail_safe_timer for some reason ends before we're in DESCENT mode
 			state_est_state.flight_phase_detection.flight_phase = DROGUE_DESCENT;
 			printf("TIMER OVERWRITING WITH DROGUE\n");
-		} else if (state_est_state.flight_phase_detection.flight_phase == DROGUE_DESCENT) {
+			fail_safe_timer_main.active = 1;
+		} else if (state_est_state.flight_phase_detection.flight_phase >= DROGUE_DESCENT) {
 			// after main fail safe timer ends, we jump into RECOVERY mode an initiate main deploy
 			// this happens for example if the barometer values are invalid during descent
 			state_est_state.flight_phase_detection.flight_phase = MAIN_DESCENT;
 			printf("TIMER OVERWRITING WITH DROGUE\n");
 		}
 	}
-	*/
+
 
 
 	// act according to flight phase
@@ -533,6 +543,7 @@ void scheduler (){
 
 	if (DEBUG_PRINT == 1) printf("tick: %ld \n",tick);
 	if (DEBUG_PRINT == 1) printf("flight phase : %d \n",flight_phase);
+	if (DEBUG_PRINT == 1) printf("armed : %d \n",armed);
 	if (DEBUG_PRINT == 1) printf("event : %d \n",event);
 	if (DEBUG_PRINT == 1) printf("alt: %ld \n",state_est_state.state_est_data.position_world[2]/1000);
 	if (DEBUG_PRINT == 1) printf("vel: %ld \n",state_est_state.state_est_data.velocity_rocket[0]/1000);

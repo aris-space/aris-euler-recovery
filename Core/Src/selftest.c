@@ -195,10 +195,40 @@ uint8_t config_imu(struct icm20601_dev * a1_dev, struct icm20601_dev * a2_dev){
 	return 1;
 }
 
-uint8_t selftest(void){
+uint8_t selftest(float TD1, float TD2, float BAT1, float BAT2, float LDR){
+
+	//check TD voltage
+	play(440,250);
+	HAL_Delay(500);
+	if (TD1 < 9) {
+		play(880,1000);
+		HAL_Delay(500);
+		play(880,1000);
+	} else {
+		play(440,500);
+		HAL_Delay(500);
+		play(880,500);
+	}
+
+	HAL_Delay(1000);
+
+	play(440,250);
+	HAL_Delay(250);
+	play(440,250);
+	HAL_Delay(500);
+	if (TD1 < 9) {
+		play(880,1000);
+		HAL_Delay(500);
+		play(880,1000);
+	} else {
+		play(440,500);
+		HAL_Delay(500);
+		play(880,500);
+	}
+
+	HAL_Delay(1000);
 
 	//check battery power,
-	//check TD voltage
 	//check LDR sensor
 
 	return 1;

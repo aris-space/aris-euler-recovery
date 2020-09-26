@@ -12,6 +12,7 @@
 
 uint32_t adc_buf[8];
 
+extern void stay_alive(void);
 extern void fire_HAWKs(uint8_t * armed);
 extern void turn_off_HAWKs(void);
 extern void fire_TDs(uint8_t * armed);

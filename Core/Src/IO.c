@@ -8,6 +8,10 @@
 #include "IO.h"
 #include "adc.h"
 
+void stay_alive(void){
+	HAL_GPIO_WritePin(STAY_ALIVE_GPIO_Port, STAY_ALIVE_Pin, GPIO_PIN_SET);
+}
+
 
 void fire_HAWKs(uint8_t * armed){
 	if (*armed == 1 ) HAL_GPIO_WritePin(HAWK1_GPIO_Port, HAWK1_Pin, GPIO_PIN_SET);
