@@ -216,7 +216,7 @@ uint8_t selftest(float TD1, float TD2, float BAT1, float BAT2, float LDR){
 	HAL_Delay(250);
 	play(440,250);
 	HAL_Delay(500);
-	if (TD1 < 9) {
+	if (TD2 < 9) {
 		play(880,1000);
 		HAL_Delay(500);
 		play(880,1000);

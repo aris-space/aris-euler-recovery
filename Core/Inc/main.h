@@ -48,7 +48,7 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 
-#define DEBUG_PRINT 1
+#define DEBUG_PRINT 0
 
 #define IGNORE_ERRORS 0
 
@@ -56,7 +56,7 @@ extern "C" {
 
 #define MACH_TIMER 17000
 #define FAIL_SAFE_TIMER 22000
-#define FAIL_SAFE_TIMER_MAIN 24000
+#define FAIL_SAFE_TIMER_MAIN 30000
 
 #define SECOND_EVENT_AGL 400
 

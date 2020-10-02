@@ -15,6 +15,9 @@ void start_timer(struct timer_t * t, uint32_t * tick){
 }
 
 uint8_t check_timer(struct timer_t * t, uint32_t * tick){
-	if ((*tick > t->end) & (t->active == 1)) return 1;
+	if ((*tick > t->end) & (t->active == 1)) {
+		t->active = 0;
+		return 1;
+	}
 	return 0;
 }
