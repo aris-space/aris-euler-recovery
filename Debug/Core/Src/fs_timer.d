@@ -31,8 +31,8 @@ Core/Src/fs_timer.o: ../Core/Src/fs_timer.c ../Core/Inc/fs_timer.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sd.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_sdmmc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
- /Users/linus/STM32IDE/aris-euler-recovery/Core/aris-euler-state-estimation/Inc/Sim_Con/state_est_const.h \
- /Users/linus/STM32IDE/aris-euler-recovery/Core/aris-euler-state-estimation/Inc/Sim_Con/state_est_config.h \
+ /Users/linus/STM32IDE/aris-euler-recovery/Core/aris-euler-state-estimation/Inc/state_est_const.h \
+ /Users/linus/STM32IDE/aris-euler-recovery/Core/aris-euler-state-estimation/Inc/state_est_config_rec.h \
  ../Core/Inc/main.h
 
 ../Core/Inc/fs_timer.h:
@@ -103,8 +103,8 @@ Core/Src/fs_timer.o: ../Core/Src/fs_timer.c ../Core/Inc/fs_timer.h \
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 
-/Users/linus/STM32IDE/aris-euler-recovery/Core/aris-euler-state-estimation/Inc/Sim_Con/state_est_const.h:
+/Users/linus/STM32IDE/aris-euler-recovery/Core/aris-euler-state-estimation/Inc/state_est_const.h:
 
-/Users/linus/STM32IDE/aris-euler-recovery/Core/aris-euler-state-estimation/Inc/Sim_Con/state_est_config.h:
+/Users/linus/STM32IDE/aris-euler-recovery/Core/aris-euler-state-estimation/Inc/state_est_config_rec.h:
 
 ../Core/Inc/main.h:

@@ -113,8 +113,6 @@
 							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec.1844547832" name="MCU Output Converter Motorola S-rec with symbols" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec.407094278"/>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1739156926.838383078" name="util.h" rcbsApplicability="disable" resourcePath="Core/aris-euler-state-estimation/Inc/Util/util.h" toolsToInvoke=""/>
-					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1739156926.1790462485" name="mutex.h" rcbsApplicability="disable" resourcePath="Core/aris-euler-state-estimation/Inc/Util/mutex.h" toolsToInvoke=""/>
 					<sourceEntries>
 						<entry excluding="aris-euler-state-estimation/Src/Util/mutex.c|aris-euler-state-estimation/Inc/Util/mutex.h|aris-euler-state-estimation/Src/Util/util.c|aris-euler-state-estimation/Inc/Util/util.h|aris-euler-state-estimation/Src/tasks|aris-euler-state-estimation/Inc/tasks" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>

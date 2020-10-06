@@ -1,9 +1,9 @@
-Core/aris-euler-state-estimation/Src/Sim_Con/kf.o: \
- ../Core/aris-euler-state-estimation/Src/Sim_Con/kf.c \
- ../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/kf.h \
- ../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/../Util/math_utils.h \
- ../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/state_est_const.h \
- ../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/state_est_config.h \
+Core/aris-euler-state-estimation/Src/kf.o: \
+ ../Core/aris-euler-state-estimation/Src/kf.c \
+ ../Core/aris-euler-state-estimation/Src/../Inc/kf.h \
+ ../Core/aris-euler-state-estimation/Src/../Inc/Util/math_utils.h \
+ ../Core/aris-euler-state-estimation/Src/../Inc/state_est_const.h \
+ ../Core/aris-euler-state-estimation/Src/../Inc/state_est_config_rec.h \
  ../Core/Inc/main.h ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -37,13 +37,13 @@ Core/aris-euler-state-estimation/Src/Sim_Con/kf.o: \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_sdmmc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h
 
-../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/kf.h:
+../Core/aris-euler-state-estimation/Src/../Inc/kf.h:
 
-../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/../Util/math_utils.h:
+../Core/aris-euler-state-estimation/Src/../Inc/Util/math_utils.h:
 
-../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/state_est_const.h:
+../Core/aris-euler-state-estimation/Src/../Inc/state_est_const.h:
 
-../Core/aris-euler-state-estimation/Src/Sim_Con/../../Inc/Sim_Con/state_est_config.h:
+../Core/aris-euler-state-estimation/Src/../Inc/state_est_config_rec.h:
 
 ../Core/Inc/main.h:
 
