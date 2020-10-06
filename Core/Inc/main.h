@@ -48,20 +48,25 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 
-#define DEBUG_PRINT 0
+#define DEBUG_PRINT 1
 
 #define IGNORE_ERRORS 0
 
 #define BUFLEN 1024
 
+/*
 #define MACH_TIMER 17000
 #define FAIL_SAFE_TIMER 22000
+#define FAIL_SAFE_TIMER_MAIN 30000
+*/
+#define MACH_TIMER 30000
+#define FAIL_SAFE_TIMER 60000
 #define FAIL_SAFE_TIMER_MAIN 30000
 
 #define SECOND_EVENT_AGL 400
 
 #define FAKE_LINE_LEN 1024
-#define FAKE_FILE_LEN 1244
+#define FAKE_FILE_LEN 2000
 
 
 /* USER CODE END EM */

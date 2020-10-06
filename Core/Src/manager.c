@@ -63,7 +63,7 @@ H3L ACCEL = ACCEL_INIT();
 
 uint32_t tick;
 uint32_t fake_tick;
-uint32_t counter = 2;
+uint32_t counter = 5;
 
 uint8_t raw_data1[3];
 uint8_t raw_data2[3];
@@ -221,13 +221,14 @@ void schedulerinit () {
 	log_to_SD(LOG_NAME, buffer);
 
 	//coffin_dance(1);
-	take_on_me();
+	seven_nation_army();
+	//take_on_me();
 	//take_on_me();
 
 	if (FAKE_DATA == 1)
 	{
 		// read in fake data
-		read_from_SD("FDATASS.CSV", TIME, P1, P2, Ax1, Ay1, Az1, Ax2, Ay2, Az2);
+		read_from_SD("FDATATU.CSV", TIME, P1, P2, Ax1, Ay1, Az1, Ax2, Ay2, Az2);
 	}
 
 	// selftest
@@ -254,6 +255,7 @@ void schedulerinit () {
 
 	if (FAKE_DATA == 1){
 		ground_pressure = 84941.75;
+		ground_pressure = 78874.20;
 		ground_temperature = 20;
 	}
 
@@ -409,14 +411,14 @@ void scheduler (){
 		state_est_state.state_est_meas.imu_data[1].acc_x = -accel2_val[2];
 		state_est_state.state_est_meas.imu_data[1].ts = fake_tick;
 
-		state_est_step(tick, &state_est_state, true);
+		state_est_step(fake_tick, &state_est_state, true);
 
 
 		// timer start
 		if ((state_est_state.flight_phase_detection.flight_phase == THRUSTING) || (launch_detect(accel1_val, accel2_val) == 1) ){
-			start_timer(&mach_timer, &tick);
-			start_timer(&fail_safe_timer, &tick);
-			start_timer(&fail_safe_timer_main, &tick);
+			start_timer(&mach_timer, &fake_tick);
+			start_timer(&fail_safe_timer, &fake_tick);
+			start_timer(&fail_safe_timer_main, &fake_tick);
 		}
 
 		if ((tick > 30000) && (CHECK_FLAG == 0)){
@@ -442,10 +444,10 @@ void scheduler (){
 
 
 	// if mach timer has passed, software arm the system
-	if (check_timer(&mach_timer, &tick) == 1) armed = 1;
+	if (check_timer(&mach_timer, &fake_tick) == 1) armed = 1;
 
 	// if fail_safe timer has passed, skip to descent flight phase
-	if (check_timer(&fail_safe_timer, &tick) == 1) {
+	if (check_timer(&fail_safe_timer, &fake_tick) == 1) {
 		if (state_est_state.flight_phase_detection.flight_phase < DROGUE_DESCENT){
 			// TODO: ask maxi if is okay to override the flight phase
 			// if the main fail_safe_timer for some reason ends before we're in DESCENT mode
@@ -455,7 +457,7 @@ void scheduler (){
 	}
 
 	// if fail_safe timer has passed, skip to descent flight phase
-	if (check_timer(&fail_safe_timer_main, &tick) == 1) {
+	if (check_timer(&fail_safe_timer_main, &fake_tick) == 1) {
 		if (state_est_state.flight_phase_detection.flight_phase < DROGUE_DESCENT){
 			// TODO: ask maxi if is okay to override the flight phase
 			// if the main fail_safe_timer for some reason ends before we're in DESCENT mode
@@ -504,14 +506,14 @@ void scheduler (){
 			// second event
 			if (TD_fired == 0){
 				fire_TDs(&armed);
-				TD_fired = tick;
+				TD_fired = fake_tick;
 				event = TENDER;
 			}
 
 			// allow 100ms of high-current through igniters
 			// if after 100ms the current is still peaking over 1 Amp, the igniters have fused
 			// this might damage the electronics and drain the battery
-			if(tick >= TD_fired + 100){
+			if(fake_tick >= TD_fired + 100){
 				if ((I_BAT1 >= 1000) || (I_BAT2 >= 1000)){
 					// turn off the pyro channels to save power and protect the circuit board
 					if (DEBUG_PRINT == 1) printf("fused igniters detected!! \n");
@@ -536,12 +538,13 @@ void scheduler (){
 		alt = state_est_state.state_est_data.position_world[2] / 1000;
 		velocity = state_est_state.state_est_data.velocity_rocket[0] / 1000;
 		sprintf(buffer,"%ld, %d ,%d, %d, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f\n",
-				tick, armed, event, flight_phase, alt, velocity, t_val[1],t_val[0],t_cpu,t_p1,t_p2,accel1_val[0],accel2_val[0],p1,p2,accel1_val[1],accel1_val[2],accel1_val[3],accel1_val[4],accel1_val[5],accel1_val[6],accel2_val[1],accel2_val[2],accel2_val[3],accel2_val[4],accel2_val[5],accel2_val[6],accel[0],accel[1],accel[2],I_BAT1,I_BAT2,V_BAT1,V_BAT2,V_LDR,V_TD1,V_TD2);
+				fake_tick, armed, event, flight_phase, alt, velocity, t_val[1],t_val[0],t_cpu,t_p1,t_p2,accel1_val[0],accel2_val[0],p1,p2,accel1_val[1],accel1_val[2],accel1_val[3],accel1_val[4],accel1_val[5],accel1_val[6],accel2_val[1],accel2_val[2],accel2_val[3],accel2_val[4],accel2_val[5],accel2_val[6],accel[0],accel[1],accel[2],I_BAT1,I_BAT2,V_BAT1,V_BAT2,V_LDR,V_TD1,V_TD2);
 
 		write_to_SD(FILE_NAME, buffer);
 	}
 
 	if (DEBUG_PRINT == 1) printf("tick: %ld \n",tick);
+	if (DEBUG_PRINT == 1) printf("fake tick: %ld \n",fake_tick);
 	if (DEBUG_PRINT == 1) printf("flight phase : %d \n",flight_phase);
 	if (DEBUG_PRINT == 1) printf("armed : %d \n",armed);
 	if (DEBUG_PRINT == 1) printf("event : %d \n",event);
@@ -559,11 +562,11 @@ void scheduler (){
 	//if (DEBUG_PRINT == 1) printf("T = %4.2f C and H = %4.2f perc \n",t_val[0],t_val[1]);
 	//if (DEBUG_PRINT == 1) printf("IMU1 T: %4.2f C \n", accel1_val[0]);
 	//if (DEBUG_PRINT == 1) printf("IMU1 ax: %4.2f m/s2 \n", accel1_val[1]);
-	//if (DEBUG_PRINT == 1) printf("IMU1 ay: %4.2f m/s2 \n", accel1_val[2]);
+	if (DEBUG_PRINT == 1) printf("IMU1 ay: %4.2f m/s2 \n", accel1_val[2]);
 	//if (DEBUG_PRINT == 1) printf("IMU1 az: %4.2f m/s2 \n", accel1_val[3]);
 	//if (DEBUG_PRINT == 1) printf("IMU2 T: %4.2f C \n", accel2_val[0]);
 	//if (DEBUG_PRINT == 1) printf("IMU2 ax: %4.2f m/s2 \n", accel2_val[1]);
-	//if (DEBUG_PRINT == 1) printf("IMU2 ay: %4.2f m/s2 \n", accel2_val[2]);
+	if (DEBUG_PRINT == 1) printf("IMU2 ay: %4.2f m/s2 \n", accel2_val[2]);
 	//if (DEBUG_PRINT == 1) printf("IMU2 az: %4.2f m/s2 \n", accel2_val[3]);
 	printf("\n");
 	//if (DEBUG_PRINT == 1) printf("ACC ax: %4.2f m/s2 \n", accel[0]);

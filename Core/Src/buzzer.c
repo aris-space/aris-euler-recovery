@@ -29,12 +29,13 @@ float A = 880.0;
 float Ais = 932.33;
 float B = 987.77;
 
-#define SF 1.5
+#define SF 1
 
 
 float sixteenth = 128.0 / SF;
 float eighth = 256.0 / SF;
 float fourth = 512.0 / SF;
+float half = 1024.0 / SF;
 
 
 void play(float freq, float time)
@@ -47,6 +48,20 @@ void play(float freq, float time)
 	}
 	HAL_GPIO_WritePin(BUZ_GPIO_Port, BUZ_Pin, GPIO_PIN_RESET);
 };
+
+void seven_nation_army(void){
+	play(2*E,fourth);
+	HAL_Delay(eighth);
+	play(2*E,eighth);
+	play(2*G,eighth);
+	HAL_Delay(sixteenth);
+	play(2*E,sixteenth);
+	HAL_Delay(eighth);
+	play(2*D,sixteenth);
+	HAL_Delay(sixteenth);
+	play(2*C,half);
+	play(B,half);
+}
 
 void take_on_me(void)
 {

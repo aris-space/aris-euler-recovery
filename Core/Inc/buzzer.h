@@ -11,6 +11,7 @@
 extern void play(float freq, float time);
 extern void coffin_dance(int n);
 void take_on_me(void);
+void seven_nation_army(void);
 
 
 #endif /* INC_BUZZER_H_ */
