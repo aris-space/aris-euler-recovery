@@ -2,7 +2,7 @@ Core/aris-euler-state-estimation/Src/flight_phase_detection.o: \
  ../Core/aris-euler-state-estimation/Src/flight_phase_detection.c \
  ../Core/aris-euler-state-estimation/Src/../Inc/flight_phase_detection.h \
  ../Core/aris-euler-state-estimation/Src/../Inc/state_est_const.h \
- ../Core/aris-euler-state-estimation/Src/../Inc/state_est_config_rec.h \
+ ../Core/aris-euler-state-estimation/Src/../Inc/state_est_config.h \
  ../Core/Inc/main.h ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -41,7 +41,7 @@ Core/aris-euler-state-estimation/Src/flight_phase_detection.o: \
 
 ../Core/aris-euler-state-estimation/Src/../Inc/state_est_const.h:
 
-../Core/aris-euler-state-estimation/Src/../Inc/state_est_config_rec.h:
+../Core/aris-euler-state-estimation/Src/../Inc/state_est_config.h:
 
 ../Core/Inc/main.h:
 
