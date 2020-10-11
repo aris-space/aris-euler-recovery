@@ -19,6 +19,8 @@ OBJCOPY_BIN :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+Core/Src \
+Core/Src/devices \
 Core/Startup \
 Core/aris-euler-state-estimation/Src/Util \
 Core/aris-euler-state-estimation/Src \
@@ -27,6 +29,4 @@ FATFS/App \
 FATFS/Target \
 Middlewares/Third_Party/FatFs/src \
 Middlewares/Third_Party/FatFs/src/option \
-Core/Src \
-Core/Src/devices \
 

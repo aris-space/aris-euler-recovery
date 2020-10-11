@@ -9,7 +9,7 @@
 #define INC_MANAGER_H_
 
 #include "main.h"
-#include "Sim_Con/state_est_config.h"
+#include "state_est_config.h"
 
 #define BARO 3
 #define SHT 100

@@ -50,17 +50,200 @@ void play(float freq, float time)
 };
 
 void seven_nation_army(void){
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(E,fourth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	HAL_Delay(eighth);
+	play(E,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(G,eighth);
+	HAL_Delay(sixteenth);
+	play(E,sixteenth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	HAL_Delay(eighth);
+	play(D,sixteenth);
+	HAL_Delay(sixteenth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(C,fourth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(C,fourth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(0.5*B,fourth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(0.5*B,fourth);
+
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(E,fourth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	HAL_Delay(eighth);
+	play(E,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(G,eighth);
+	HAL_Delay(sixteenth);
+	play(E,sixteenth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	HAL_Delay(eighth);
+	play(D,sixteenth);
+	HAL_Delay(sixteenth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(C,eighth+sixteenth);
+
+	play(D,sixteenth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(D,eighth);
+	play(C,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(0.5*B,fourth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(0.5*A,fourth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
 	play(2*E,fourth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
 	HAL_Delay(eighth);
 	play(2*E,eighth);
-	play(2*G,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	for (int i=2*E; i<2*G; i+= 2*(G - E)/20){
+		play(i,eighth/20);
+	}
+	play(2*G,eighth/20);
+
 	HAL_Delay(sixteenth);
 	play(2*E,sixteenth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
 	HAL_Delay(eighth);
 	play(2*D,sixteenth);
 	HAL_Delay(sixteenth);
-	play(2*C,half);
-	play(B,half);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	for (int i=2*D; i<=2*G; i+= (2*G - 2*D)/20){
+		play(i,eighth/20);
+	}
+	play(2*G,eighth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(2*G,fourth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(2*Fis,fourth);
+
+	toggle(&BPRGM);
+	toggle(&BRDY);
+	toggle(&BSAVE);
+	toggle(&BSTAT);
+
+	play(2*Fis,fourth);
 }
 
 void take_on_me(void)
