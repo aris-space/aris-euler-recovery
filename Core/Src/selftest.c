@@ -10,6 +10,7 @@
 #include <math.h>
 #include <stdlib.h>
 
+// TODO implement error sounds!!!!
 
 // these sanity checks are performed during steady state on the launch pad.
 

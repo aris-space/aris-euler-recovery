@@ -54,19 +54,28 @@ extern "C" {
 
 #define BUFLEN 1024
 
-#define MACH_TIMER 17000
-#define FAIL_SAFE_TIMER 22000
-#define FAIL_SAFE_TIMER_MAIN 30000
+
+// TODO check with SIMCON and SE!
+// https://onedrive.live.com/edit.aspx?resid=983EF7B604464D67!13681&ithint=file%2cxlsx&authkey=!AH6PC5Jj8wPgeFU
+
+
+#define APOGEE 29800
+#define MACH_TIMER 20000
+#define FAIL_SAFE_TIMER APOGEE + 500
+#define FAIL_SAFE_TIMER_MAIN APOGEE + 94000
+#define FAIL_SAFE_MAIN_DELTA 76000
+
 /*
-#define MACH_TIMER 30000
-#define FAIL_SAFE_TIMER 60000
-#define FAIL_SAFE_TIMER_MAIN 60000
+//HEIDI:
+#define MACH_TIMER 20000
+#define FAIL_SAFE_TIMER 40000
+#define FAIL_SAFE_TIMER_MAIN 140000
+#define FAIL_SAFE_MAIN_2 75000
 */
-#define SECOND_EVENT_AGL 400
 
 #define FAKE_LINE_LEN 1024
 //#define FAKE_FILE_LEN 2058
-#define FAKE_FILE_LEN 1024
+#define FAKE_FILE_LEN 1800
 
 
 /* USER CODE END EM */

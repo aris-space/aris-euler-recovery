@@ -2,7 +2,7 @@ SD.c:23:10:bufsize	24	static
 SD.c:31:6:bufclear	24	static
 SD.c:40:9:find_file	96	static
 SD.c:72:9:init_sd	128	static
-SD.c:131:9:init_file	408	static
+SD.c:131:9:init_file	448	static
 SD.c:199:7:extract_from_str	72	static
 SD.c:215:6:read_from_SD	1096	static
 SD.c:290:6:write_to_SD	24	static

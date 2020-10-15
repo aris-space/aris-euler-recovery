@@ -143,7 +143,7 @@ uint8_t init_file(char * FILE_NAME, char * LOG_NAME){
 	}
 	/* Writing text */
 	//char myData[] = "xyx,ghj,acceleration,target position\n 1000,231.25,10,500.5";
-	char myData[] = "Time,Armed,Event,State2,h,v,H_SHT,T_SHT,T_CPU,T_BARO1,T_BARO2,T_IMU1,T_IMU2,P_BARO1,P_BARO2,Ax_IMU1,Ay_IMU1,Az_IMU1,Gx_IMU1,Gy_IMU1,Gz_IMU1,Ax_IMU2,Ay_IMU2,Az_IMU2,Gx_IMU2,Gy_IMU2,Gz_IMU2,Ax_H3L,Ay_H3L,Az_H3L,I_BAT1,I_BAT2,V_BAT1,V_BAT2,V_LDR,V_TD1,V_TD2\n";
+	char myData[] = "Time,Armed,Event,State,MachTimer,FailSafeTimer,FailSafeMainTimer,h,v,H_SHT,T_SHT,T_CPU,T_BARO1,T_BARO2,T_IMU1,T_IMU2,P_BARO1,P_BARO2,Ax_IMU1,Ay_IMU1,Az_IMU1,Gx_IMU1,Gy_IMU1,Gz_IMU1,Ax_IMU2,Ay_IMU2,Az_IMU2,Gx_IMU2,Gy_IMU2,Gz_IMU2,Ax_H3L,Ay_H3L,Az_H3L,I_BAT1,I_BAT2,V_BAT1,V_BAT2,V_LDR,V_TD1,V_TD2\n";
 
 	fresult = f_write(&data_file, myData, sizeof(myData), &bw);
 	/* Close file */
