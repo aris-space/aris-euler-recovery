@@ -1,7 +1,7 @@
 # aris-euler-recovery
 Recovery subteam code
 
-based on the aris-euler-state-estimation from the simcon subteam
+includes the aris-euler-state-estimation from the simcon subteam
 features:
   - sensor selftest
   - voltage selftest
