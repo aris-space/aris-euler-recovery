@@ -100,7 +100,7 @@
 #define SENS_nofifo 0x00
 #define SENS_disablei2c 0x41
 
-#define IMU20601_SPI_TIMEOUT 3000
+#define IMU20601_SPI_TIMEOUT 10
 
 
 // *** enums *** //

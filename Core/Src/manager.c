@@ -131,7 +131,7 @@ float Ax2[FAKE_FILE_LEN];
 float Ay2[FAKE_FILE_LEN];
 float Az2[FAKE_FILE_LEN];
 
-float launch_detect_buffer[5];
+float launch_detect_buffer[5] = {0.0};
 
 uint32_t getNextExecution(task_t * task){
 	return task->last_call + task->interval;
@@ -257,7 +257,7 @@ void schedulerinit () {
 	passed += config_baro(&TEMP, &BARO1, &BARO2, &ground_temperature, &ground_pressure);
 	passed += config_imu(&IMU1, &IMU2);
 
-	if (passed != 0){
+	if (passed != 2){
 		// sound error
 		if (IGNORE_ERRORS == 0){
 			while (1){
@@ -344,6 +344,10 @@ void scheduler (){
 				ms5607_convert(&BARO2, &p2, &t_p2);
 				BARO_TASK.stage = MS_TEMPERATURE_REQ;
 				break;
+			default:
+				BARO_TASK.stage = MS_TEMPERATURE_REQ;
+				break;
+
 		}
 	}
 
@@ -439,8 +443,8 @@ void scheduler (){
 
 			uint8_t passed = 0;
 			float check_a = -accel1_val[2];
-			float check_h = state_est_state.state_est_data.position_world[2] / 1000;
-			float check_v = state_est_state.state_est_data.velocity_rocket[0] / 1000;
+			float check_h = (float)state_est_state.state_est_data.position_world[2] / 1000.0;
+			float check_v = (float)state_est_state.state_est_data.velocity_rocket[0] / 1000.0;
 			if (state_est_sanity_check(&check_a, &check_h, &check_v) == 0){
 				if (DEBUG_PRINT == 1) printf("sanity check for state estimation failed! \n");
 			} else {
@@ -456,9 +460,13 @@ void scheduler (){
 			if (passed != 2){
 				// sound error
 				if (IGNORE_ERRORS == 0){
+					printf("state est checkup failed!\n");
 					while (1){
 						// sound error
 					}
+				} else{
+					printf("state est ok\n");
+					while(1);
 				}
 			}
 		}
@@ -471,32 +479,23 @@ void scheduler (){
 
 	// if fail_safe timer has passed, skip to descent flight phase
 	if (check_timer(&fail_safe_timer, &tick) == 1) {
+		fire_HAWKs(&armed);
 		if (state_est_state.flight_phase_detection.flight_phase < DROGUE_DESCENT){
 			// TODO: ask maxi if is okay to override the flight phase
 			// if the main fail_safe_timer for some reason ends before we're in DESCENT mode
-			state_est_state.flight_phase_detection.flight_phase = DROGUE_DESCENT;
 			printf("TIMER FS OVERWRITING WITH DROGUE\n");
 			// if fail_safe timer has initiated drogue, we need to adjust the second fail safe timer
 			// since we spent some part of the descent in ballistic flight, thus falling faster than
 			// with drogue exactly at apogee
 			fail_safe_timer_main.end = HAL_GetTick() + FAIL_SAFE_MAIN_DELTA;
 		}
+		state_est_state.flight_phase_detection.flight_phase = DROGUE_DESCENT;
 	}
 
 	// if fail_safe timer has passed, skip to descent flight phase
 	if (check_timer(&fail_safe_timer_main, &tick) == 1) {
-		if (state_est_state.flight_phase_detection.flight_phase < DROGUE_DESCENT){
-			// TODO: ask maxi if is okay to override the flight phase
-			// if the main fail_safe_timer for some reason ends before we're in DESCENT mode
-			state_est_state.flight_phase_detection.flight_phase = DROGUE_DESCENT;
-			printf("TIMER OVERWRITING WITH DROGUE\n");
-			fail_safe_timer_main.active = 1;
-		} else if (state_est_state.flight_phase_detection.flight_phase >= DROGUE_DESCENT) {
-			// after main fail safe timer ends, we jump into RECOVERY mode an initiate main deploy
-			// this happens for example if the barometer values are invalid during descent
-			state_est_state.flight_phase_detection.flight_phase = MAIN_DESCENT;
-			printf("TIMER OVERWRITING WITH DROGUE\n");
-		}
+		fire_HAWKs(&armed);
+		fire_TDs(&armed);
 	}
 
 
@@ -550,10 +549,17 @@ void scheduler (){
 			}
 			break;
 		case TOUCHDOWN:
-			play(440,100);
-			play(659.25,100);
-			play(880,200);
-			HAL_Delay(600);
+			if ((fail_safe_timer.active == 0) && (fail_safe_timer_main.active == 0)){
+				fire_HAWKs(&armed);
+				fire_TDs(&armed);
+				play(440,100);
+				play(659.25,100);
+				play(880,200);
+				HAL_Delay(600);
+			}
+			break;
+		default:
+			state_est_state.flight_phase_detection.flight_phase = TOUCHDOWN;
 			break;
 	}
 
@@ -562,10 +568,10 @@ void scheduler (){
 	if(tick >= getNextExecution(&LOG_TASK)){
 		LOG_TASK.last_call = tick;
 		flight_phase = state_est_state.flight_phase_detection.flight_phase;
-		alt = state_est_state.state_est_data.position_world[2] / 1000;
+		alt = (float)state_est_state.state_est_data.position_world[2] / 1000.0;
 		// just for debugging
 		//t_cpu = state_est_state.kf_state.y[0];
-		velocity = state_est_state.state_est_data.velocity_rocket[0] / 1000;
+		velocity = (float)state_est_state.state_est_data.velocity_rocket[0] / 1000.0;
 		sprintf(buffer,"%ld, %d ,%d, %d, %d, %d, %d, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f\n",
 				tick, armed, event, flight_phase, mach_timer.active, fail_safe_timer.active, fail_safe_timer_main.active, alt, velocity, t_val[1],t_val[0],t_cpu,t_p1,t_p2,accel1_val[0],accel2_val[0],p1,p2,accel1_val[1],accel1_val[2],accel1_val[3],accel1_val[4],accel1_val[5],accel1_val[6],accel2_val[1],accel2_val[2],accel2_val[3],accel2_val[4],accel2_val[5],accel2_val[6],accel[0],accel[1],accel[2],I_BAT1,I_BAT2,V_BAT1,V_BAT2,V_LDR,V_TD1,V_TD2);
 

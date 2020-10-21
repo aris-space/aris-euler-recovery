@@ -16,7 +16,7 @@
 
 uint8_t p_sanity_check(float * p){
 	// sanity check of the pressure value on the launchpad
-	if ((*p < 110000) && (*p > 80000)) {
+	if ((*p < 110000) && (*p > 70000)) {
 		return 1;
 	} else {
 		return 0;
@@ -43,17 +43,17 @@ uint8_t a_sanity_check(float * a){
 
 uint8_t state_est_sanity_check(float * h, float * a, float * v){
 	// sanity check of the altitude, velocity and acceleration value on the launchpad
-	if (a_sanity_check(a) == 0){
+	if (a_sanity_check(a) == 1){
 		if (DEBUG_PRINT == 1) printf("state est accel out of bounds. a = %4.2f \n",*a);
 		return 0;
 	}
 
-	if ((*h > 50) | (*h < -50)) {
+	if ((*h > 20) || (*h < -20)) {
 		if (DEBUG_PRINT == 1) printf("state est altitude out of bounds. h = %4.2f \n",*h);
 		return 0;
 	}
 
-	if ((*v > 10) | (*v < -10)) {
+	if ((*v > 10) || (*v < -10)) {
 		if (DEBUG_PRINT == 1) printf("state est velocity out of bounds. v = %4.2f \n",*v);
 		return 0;
 	}
@@ -162,23 +162,26 @@ uint8_t config_imu(struct icm20601_dev * a1_dev, struct icm20601_dev * a2_dev){
 	{
 		icm20601_read_data(a1_dev, a1_temp);
 		icm20601_read_data(a2_dev, a2_temp);
+
 		if (i >= 10) {
 			// ignore the first 10 measurements to let the accelerometer "warm" up
 			for (int j = 1; j < 4; j++){
-				a1_sum[j-1] += abs(a1_temp[j]);
-				a2_sum[j-1] += abs(a2_temp[j]);
+				a1_sum[j-1] += fabs(a1_temp[j]);
+				a2_sum[j-1] += fabs(a2_temp[j]);
 			}
 		}
 		HAL_Delay(MAX_SETUP_SAMPLE_INTERVAL);
 	}
 
 	// assume rocket is in upright position, config axes accordingly
-
 	uint8_t imu1_state = 0;
 	uint8_t imu2_state = 0;
+	uint8_t correct_axes = 0;
 	for (int j = 0; j < 3; j++){
 		a1_sum[j] /= MAX_SETUP_SAMPLE;
 		a2_sum[j] /= MAX_SETUP_SAMPLE;
+		printf("IMU1 a-%d: %4.2f \n",j,a1_sum[j]);
+		printf("IMU2 a-%d: %4.2f \n",j,a2_sum[j]);
 		if (a_sanity_check(&a1_sum[j]) == 1){
 			imu1_state ++;
 		}
@@ -187,10 +190,15 @@ uint8_t config_imu(struct icm20601_dev * a1_dev, struct icm20601_dev * a2_dev){
 		}
 	}
 
-	if (imu1_state + imu2_state != 2){
+	if ((-a1_temp[2] > 7) && (-a1_temp[2] < 11)) correct_axes ++;
+	if ((-a2_temp[2] > 7) && (-a2_temp[2] < 11)) correct_axes ++;
+
+	if ((imu1_state != 1) || (imu2_state != 1) || (correct_axes != 2)){
 		if (DEBUG_PRINT == 1) printf("IMU axes out of bounds. abort. \n");
 		if (DEBUG_PRINT == 1) printf("IMU1: %d \n", imu1_state);
 		if (DEBUG_PRINT == 1) printf("IMU2: %d \n", imu2_state);
+		if (DEBUG_PRINT == 1) printf("IMU ay: %4.2f \n", -a1_temp[2]);
+		if (DEBUG_PRINT == 1) printf("IMU ay: %4.2f \n", -a2_temp[2]);
 		return 0;
 	}
 	return 1;

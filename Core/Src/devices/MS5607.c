@@ -121,9 +121,9 @@ void ms5607_read_pressure(struct ms5607_dev * dev, uint8_t * dat)
 	HAL_I2C_Master_Receive(dev->i2c_bus, dev->addr, buf, 3, dev->delay);
 
 	dev->D2 = (uint32_t)(buf[0] << 16) | (uint32_t)(buf[1] << 8) | (uint32_t)buf[2];
-	dat[3] = buf[0];
-	dat[4] = buf[1];
-	dat[5] = buf[2];
+	dat[0] = buf[0];
+	dat[1] = buf[1];
+	dat[2] = buf[2];
 
 	buf[0] = 0x44;
 	HAL_I2C_Master_Transmit(dev->i2c_bus, dev->addr, buf, 1, dev->delay);
