@@ -59,11 +59,11 @@ extern "C" {
 // https://onedrive.live.com/edit.aspx?resid=983EF7B604464D67!13681&ithint=file%2cxlsx&authkey=!AH6PC5Jj8wPgeFU
 #define FAKE_DATA 0
 
-#define APOGEE 29800
+#define APOGEE 27200
 #define MACH_TIMER 20000
-#define FAIL_SAFE_TIMER APOGEE + 500
-#define FAIL_SAFE_TIMER_MAIN APOGEE + 94000
-#define FAIL_SAFE_MAIN_DELTA 76000
+#define FAIL_SAFE_TIMER 32000
+#define FAIL_SAFE_TIMER_MAIN APOGEE + 121000
+#define FAIL_SAFE_MAIN_DELTA 115000
 
 /*
 //HEIDI:
