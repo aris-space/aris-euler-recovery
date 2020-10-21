@@ -258,11 +258,11 @@ void schedulerinit () {
 		// sound error
 		if (IGNORE_ERRORS == 0){
 			while (1){
-				// sound error
+				play_FAIL_sound();
 			}
 		}
 	}
-	//okay sound
+	play_OK_sound();
 
 #if FAKE_DATA == 1
 		// overwrite data for calibration at bootup for fake data
@@ -459,13 +459,13 @@ void scheduler (){
 				if (IGNORE_ERRORS == 0){
 					printf("state est checkup failed!\n");
 					while (1){
-						// sound error
+						play_FAIL_sound();
 					}
-				} else{
-					printf("state est ok\n");
-					while(1);
 				}
 			}
+			printf("state est ok\n");
+			play_OK_sound();
+			play_OK_sound();
 		}
 
 	}

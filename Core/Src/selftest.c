@@ -240,6 +240,13 @@ uint8_t selftest(float TD1, float TD2, float BAT1, float BAT2, float LDR){
 	HAL_Delay(1000);
 
 	//check battery power,
+	if (BAT1 < 11){
+		play_FAIL_sound();
+	}
+
+	if (BAT2 < 11){
+		play_FAIL_sound();
+	}
 	//check LDR sensor
 
 	return 1;

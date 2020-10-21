@@ -49,6 +49,25 @@ void play(float freq, float time)
 	HAL_GPIO_WritePin(BUZ_GPIO_Port, BUZ_Pin, GPIO_PIN_RESET);
 };
 
+void play_OK_sound(){
+	play(800,500);
+	play(1600,200);
+	HAL_Delay(50);
+	play(1600,1000);
+}
+
+
+void play_FAIL_sound(){
+	for (int i=0; i<20; i++){
+		play(400,20);
+		play(600,20);
+	}
+	for (int i=0; i<20; i++){
+		play(1600,20);
+		play(1800,20);
+	}
+}
+
 void seven_nation_army(void){
 
 	toggle(&BPRGM);

@@ -12,6 +12,7 @@ extern void play(float freq, float time);
 extern void coffin_dance(int n);
 void take_on_me(void);
 void seven_nation_army(void);
-
+void play_OK_sound();
+void play_FAIL_sound();
 
 #endif /* INC_BUZZER_H_ */
