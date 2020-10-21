@@ -57,7 +57,7 @@ extern "C" {
 
 // TODO check with SIMCON and SE!
 // https://onedrive.live.com/edit.aspx?resid=983EF7B604464D67!13681&ithint=file%2cxlsx&authkey=!AH6PC5Jj8wPgeFU
-
+#define FAKE_DATA 0
 
 #define APOGEE 29800
 #define MACH_TIMER 20000

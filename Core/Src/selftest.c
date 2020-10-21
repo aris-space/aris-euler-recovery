@@ -134,6 +134,7 @@ uint8_t config_baro(struct sht31_dev * t_dev, struct ms5607_dev * p1_dev, struct
 		if (i >= 10) t1_sum += sht_val[0];
 		HAL_Delay(MAX_SETUP_SAMPLE_INTERVAL);
 	}
+	/*
 	t1_sum /= MAX_SETUP_SAMPLE;
 
 	if (!t_sanity_check(&t1_sum)){
@@ -143,6 +144,7 @@ uint8_t config_baro(struct sht31_dev * t_dev, struct ms5607_dev * p1_dev, struct
 		// if SHT is available, use SHT temperature value for environement
 		*t = t1_sum;
 	}
+	*/
 
 	if (DEBUG_PRINT == 1) printf("Config pressure = %4.2f \n",*p);
 	if (DEBUG_PRINT == 1) printf("Config temp = %4.2f \n",*t);

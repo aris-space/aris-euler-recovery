@@ -115,8 +115,6 @@ float V_TD2;
 
 state_est_state_t state_est_state = { 0 };
 
-uint8_t FAKE_DATA = 0;
-
 uint8_t CHECK_FLAG = 0;
 
 uint32_t TD_fired = 0;
@@ -229,11 +227,10 @@ void schedulerinit () {
 	//take_on_me();
 	//take_on_me();
 
-	if (FAKE_DATA == 1)
-	{
+#if FAKE_DATA == 1
 		// read in fake data
 		read_from_SD("FDATAHE.CSV", TIME, P1, P2, Ax1, Ay1, Az1, Ax2, Ay2, Az2);
-	}
+#endif
 
 	// selftest
 
@@ -265,8 +262,9 @@ void schedulerinit () {
 			}
 		}
 	}
+	//okay sound
 
-	if (FAKE_DATA == 1){
+#if FAKE_DATA == 1
 		// overwrite data for calibration at bootup for fake data
 		// hardcoded, I know, nasty.. sorry!
 		//ground_pressure = 84941.75;
@@ -274,7 +272,7 @@ void schedulerinit () {
 		//ground_pressure = 86172.00;
 		ground_pressure = 101327;
 		ground_temperature = 20;
-	}
+#endif
 
 	reset_state_est_state(ground_pressure, ground_temperature, &state_est_state);
 	t0 = HAL_GetTick();
@@ -284,8 +282,7 @@ void scheduler (){
 
 	tick = HAL_GetTick();
 
-	if (FAKE_DATA == 1){
-		// use fake/old data from SD card to overwrite current sensor data
+#if FAKE_DATA == 1		// use fake/old data from SD card to overwrite current sensor data
 		counter ++;
 
 		// if fake file ends, continue with nominal operation
@@ -296,7 +293,7 @@ void scheduler (){
 
 		tick = TIME[counter];
 		printf("FAKE DATA LINE %ld \n",counter);
-	}
+#endif
 
 	// TASK LED
 	// cool light show! :)
@@ -386,8 +383,7 @@ void scheduler (){
 		t_cpu = adc_dat[7];
 	}
 
-	if (FAKE_DATA == 1){
-
+#if FAKE_DATA == 1
 		// use fake/old data from SD card to overwrite current sensor data
 		p1 = P1[counter];
 		p2 = P2[counter];
@@ -400,7 +396,8 @@ void scheduler (){
 		// temperature is hardcoded, I know, nasty.. sorry!
 		t_p1 = 20;
 		t_p2 = 20;
-	}
+#endif
+
 
 	// TASK STATE ESTIMATION
 	if((tick >= getNextExecution(&STATE_EST_TASK)) || (FAKE_DATA == 1)){
@@ -534,18 +531,6 @@ void scheduler (){
 				fire_TDs(&armed);
 				TD_fired = tick;
 				event = TENDER;
-			}
-
-			// allow 100ms of high-current through igniters
-			// if after 100ms the current is still peaking over 1 Amp, the igniters have fused
-			// this might damage the electronics and drain the battery
-			if(tick >= TD_fired + 100){
-				if ((I_BAT1 >= 1000) || (I_BAT2 >= 1000)){
-					// turn off the pyro channels to save power and protect the circuit board
-					if (DEBUG_PRINT == 1) printf("fused igniters detected!! \n");
-					turn_off_TDs();
-					event = TENDER_DISABLE;
-				}
 			}
 			break;
 		case TOUCHDOWN:
