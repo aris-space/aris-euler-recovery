@@ -48,7 +48,7 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 
-#define DEBUG_PRINT 1
+#define DEBUG_PRINT 0
 
 #define IGNORE_ERRORS 0
 
@@ -75,7 +75,9 @@ extern "C" {
 
 #define FAKE_LINE_LEN 1024
 //#define FAKE_FILE_LEN 2058
-#define FAKE_FILE_LEN 1800
+#define FAKE_FILE_LEN 1900
+
+#define MAX_FILE_SIZE 100
 
 
 /* USER CODE END EM */

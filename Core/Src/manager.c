@@ -139,7 +139,7 @@ uint8_t launch_detect(float * a1, float * a2){
 	for (int i = 1; i < 5; i++){
 		launch_detect_buffer[i-1] = launch_detect_buffer[i];
 	}
-	launch_detect_buffer[4] = (sqrt(a1[1]*a1[1] + a1[2]*a1[2] + a1[3]*a1[3]) + sqrt(a2[1]*a2[1] + a2[2]*a2[2] + a2[3]*a2[3])) / 2;
+	launch_detect_buffer[4] = (sqrtf(a1[1]*a1[1] + a1[2]*a1[2] + a1[3]*a1[3]) + sqrtf(a2[1]*a2[1] + a2[2]*a2[2] + a2[3]*a2[3])) / 2;
 	float sum_a = 0;
 	for (int i = 0; i < 5; i++){
 		sum_a += launch_detect_buffer[i];
@@ -194,17 +194,22 @@ void schedulerinit () {
 		turn_off(&RDY);
 		HAL_Delay(100);
 	}
-	if (DEBUG_PRINT == 1) printf("num_dat_file: %hu \n",num_dat_file);
-	if (DEBUG_PRINT == 1) printf("num_log_file: %hu \n",num_log_file);
-
+#if DEBUG_PRINT == 1
+	printf("num_dat_file: %hu \n",num_dat_file);
+	printf("num_log_file: %hu \n",num_log_file);
+#endif
 	num_log_file ++;
 	num_dat_file ++;
 
 	sprintf(FILE_NAME,"FL%04u.CSV", num_dat_file);
-	if (DEBUG_PRINT == 1) printf("saving %s ...",FILE_NAME);
+#if DEBUG_PRINT == 1
+	printf("saving %s ...",FILE_NAME);
+#endif
 
 	sprintf(LOG_NAME,"LOG%02u.CSV", num_log_file);
-	if (DEBUG_PRINT == 1) printf("saving %s ...",LOG_NAME);
+#if DEBUG_PRINT == 1
+	printf("saving %s ...",LOG_NAME);
+#endif
 
 	SD_state = init_file(FILE_NAME, LOG_NAME);
 
@@ -269,8 +274,8 @@ void schedulerinit () {
 		// hardcoded, I know, nasty.. sorry!
 		//ground_pressure = 84941.75;
 		//ground_pressure = 78874.20;
-		//ground_pressure = 86172.00;
-		ground_pressure = 101327;
+		ground_pressure = 86172.00;
+		//ground_pressure = 101327;
 		ground_temperature = 20;
 #endif
 
@@ -281,18 +286,25 @@ void schedulerinit () {
 void scheduler (){
 
 	tick = HAL_GetTick();
+	counter ++;
 
-#if FAKE_DATA == 1		// use fake/old data from SD card to overwrite current sensor data
-		counter ++;
-
+#if FAKE_DATA == 1
+		// use fake/old data from SD card to overwrite current sensor data
 		// if fake file ends, continue with nominal operation
 		if (counter >= FAKE_FILE_LEN){
-			FAKE_DATA = 0;
 			printf("FAKE FILE ENDED \n");
+			while(1);
 		}
 
 		tick = TIME[counter];
 		printf("FAKE DATA LINE %ld \n",counter);
+#endif
+#if FAKE_DATA == 0
+		if (counter > MAX_FILE_SIZE){
+			counter = 0;
+			num_dat_file ++;
+			sprintf(FILE_NAME,"FL%04u.CSV", num_dat_file);
+		}
 #endif
 
 	// TASK LED
@@ -436,20 +448,23 @@ void scheduler (){
 
 			// Perform sanity check of state estimation 30 seconds after bootup!
 			// this is in steady state on the launchpad
-			// TODO BUZZER SOUND
 
 			uint8_t passed = 0;
 			float check_a = -accel1_val[2];
 			float check_h = (float)state_est_state.state_est_data.position_world[2] / 1000.0;
 			float check_v = (float)state_est_state.state_est_data.velocity_rocket[0] / 1000.0;
 			if (state_est_sanity_check(&check_a, &check_h, &check_v) == 0){
-				if (DEBUG_PRINT == 1) printf("sanity check for state estimation failed! \n");
+#if DEBUG_PRINT == 1
+				printf("sanity check for state estimation failed! \n");
+#endif
 			} else {
 				passed ++;
 			}
 			check_a = -accel2_val[2];
 			if (state_est_sanity_check(&check_a, &check_h, &check_v) == 0){
-				if (DEBUG_PRINT == 1) printf("sanity check for state estimation failed! \n");
+#if DEBUG_PRINT == 1
+				printf("sanity check for state estimation failed! \n");
+#endif
 			} else {
 				passed ++;
 			}
@@ -457,13 +472,17 @@ void scheduler (){
 			if (passed != 2){
 				// sound error
 				if (IGNORE_ERRORS == 0){
+#if DEBUG_PRINT == 1
 					printf("state est checkup failed!\n");
+#endif
 					while (1){
 						play_FAIL_sound();
 					}
 				}
 			}
+#if DEBUG_PRINT == 1
 			printf("state est ok\n");
+#endif
 			play_OK_sound();
 			play_OK_sound();
 		}
@@ -477,10 +496,13 @@ void scheduler (){
 	// if fail_safe timer has passed, skip to descent flight phase
 	if (check_timer(&fail_safe_timer, &tick) == 1) {
 		fire_HAWKs(&armed);
+		event = HAWKS;
 		if (state_est_state.flight_phase_detection.flight_phase < DROGUE_DESCENT){
 			// TODO: ask maxi if is okay to override the flight phase
 			// if the main fail_safe_timer for some reason ends before we're in DESCENT mode
+#if DEBUG_PRINT == 1
 			printf("TIMER FS OVERWRITING WITH DROGUE\n");
+#endif
 			// if fail_safe timer has initiated drogue, we need to adjust the second fail safe timer
 			// since we spent some part of the descent in ballistic flight, thus falling faster than
 			// with drogue exactly at apogee
@@ -493,6 +515,8 @@ void scheduler (){
 	if (check_timer(&fail_safe_timer_main, &tick) == 1) {
 		fire_HAWKs(&armed);
 		fire_TDs(&armed);
+		event = TENDER;
+
 	}
 
 
@@ -562,31 +586,24 @@ void scheduler (){
 
 		write_to_SD(FILE_NAME, buffer);
 	}
+#if DEBUG_PRINT == 1
+	printf("tick: %ld \n",tick);
+	printf("flight phase : %d \n",flight_phase);
+	printf("armed : %d \n",armed);
+	printf("event : %d \n",event);
+	printf("alt: %ld \n",state_est_state.state_est_data.position_world[2]/1000);
+	printf("vel: %ld \n",state_est_state.state_est_data.velocity_rocket[0]/1000);
 
-	if (DEBUG_PRINT == 1) printf("tick: %ld \n",tick);
-	if (DEBUG_PRINT == 1) printf("flight phase : %d \n",flight_phase);
-	if (DEBUG_PRINT == 1) printf("armed : %d \n",armed);
-	if (DEBUG_PRINT == 1) printf("event : %d \n",event);
-	if (DEBUG_PRINT == 1) printf("alt: %ld \n",state_est_state.state_est_data.position_world[2]/1000);
-	if (DEBUG_PRINT == 1) printf("vel: %ld \n",state_est_state.state_est_data.velocity_rocket[0]/1000);
-
-	if (DEBUG_PRINT == 1) printf("ax1 = %4.2f \n",state_est_state.state_est_meas.imu_data[0].acc_x);
-	if (DEBUG_PRINT == 1) printf("ax2 = %4.2f \n",state_est_state.state_est_meas.imu_data[1].acc_x);
-	if (DEBUG_PRINT == 1) printf("p1 = %4.2f \n",state_est_state.state_est_meas.baro_data[0].pressure);
-	if (DEBUG_PRINT == 1) printf("p2 = %4.2f \n",state_est_state.state_est_meas.baro_data[1].pressure);
-	//if (DEBUG_PRINT == 1) printf("p2 = %4.2f bar and t2 = %4.2f C \n",p2,t_p2);
-	//if (DEBUG_PRINT == 1) printf("T = %4.2f C and H = %4.2f perc \n",t_val[0],t_val[1]);
-	//if (DEBUG_PRINT == 1) printf("IMU1 T: %4.2f C \n", accel1_val[0]);
-	//if (DEBUG_PRINT == 1) printf("IMU1 ax: %4.2f m/s2 \n", accel1_val[1]);
-	if (DEBUG_PRINT == 1) printf("IMU1 ay: %4.2f m/s2 \n", accel1_val[2]);
-	//if (DEBUG_PRINT == 1) printf("IMU1 az: %4.2f m/s2 \n", accel1_val[3]);
-	//if (DEBUG_PRINT == 1) printf("IMU2 T: %4.2f C \n", accel2_val[0]);
-	//if (DEBUG_PRINT == 1) printf("IMU2 ax: %4.2f m/s2 \n", accel2_val[1]);
-	if (DEBUG_PRINT == 1) printf("IMU2 ay: %4.2f m/s2 \n", accel2_val[2]);
-	//if (DEBUG_PRINT == 1) printf("IMU2 az: %4.2f m/s2 \n", accel2_val[3]);
-	//if (DEBUG_PRINT == 1) printf("ACC ax: %4.2f m/s2 \n", accel[0]);
-	//if (DEBUG_PRINT == 1) printf("ACC ay: %4.2f m/s2 \n", accel[1]);
-	//if (DEBUG_PRINT == 1) printf("ACC az: %4.2f m/s2 \n", accel[2]);
+	printf("ax1 = %4.2f \n",state_est_state.state_est_meas.imu_data[0].acc_x);
+	printf("ax2 = %4.2f \n",state_est_state.state_est_meas.imu_data[1].acc_x);
+	printf("p1 = %4.2f \n",state_est_state.state_est_meas.baro_data[0].pressure);
+	printf("p2 = %4.2f \n",state_est_state.state_est_meas.baro_data[1].pressure);
+	printf("IMU1 ax: %4.2f m/s2 \n", accel1_val[1]);
+	printf("IMU1 ay: %4.2f m/s2 \n", accel1_val[2]);
+	printf("IMU2 ax: %4.2f m/s2 \n", accel2_val[1]);
+	printf("IMU2 ay: %4.2f m/s2 \n", accel2_val[2]);
+	printf("ACC az: %4.2f m/s2 \n", accel[2]);
+#endif
 
 
 }

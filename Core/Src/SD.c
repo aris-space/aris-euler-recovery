@@ -74,16 +74,21 @@ uint8_t init_sd(uint16_t * file_count, uint16_t * log_count){
 	FATFS *pfs;
 	DWORD fre_clust;
 	uint32_t total, free_space;
-
-	if (DEBUG_PRINT == 1) printf("mounting SD card...\n");
+#if DEBUG_PRINT == 1
+	printf("mounting SD card...\n");
+#endif
 
 	FRESULT ret = f_mount(&fs, SDPath, 1);
 	if (ret == FR_OK)
 	{
-		if (DEBUG_PRINT == 1) printf("mounted SD card\n");
+#if DEBUG_PRINT == 1
+	  printf("mounted SD card\n");
+#endif
 	} else {
-		if (DEBUG_PRINT == 1) printf("no SD connection established\n");
-	  if (DEBUG_PRINT == 1) printf("error: %d\n",ret);
+#if DEBUG_PRINT == 1
+	  printf("no SD connection established\n");
+	  printf("error: %d\n",ret);
+#endif
 	  return 0;
 	}
 
@@ -91,9 +96,13 @@ uint8_t init_sd(uint16_t * file_count, uint16_t * log_count){
 	f_getfree(SDPath, &fre_clust, &pfs);
 
 	total = (uint32_t)((pfs->n_fatent - 2) * pfs->csize * 0.5);
-	if (DEBUG_PRINT == 1) printf("SD CARD Total Size: \t%lu\n",total);
+#if DEBUG_PRINT == 1
+	printf("SD CARD Total Size: \t%lu\n",total);
+#endif
 	free_space = (uint32_t)(fre_clust * pfs->csize * 0.5);
-	if (DEBUG_PRINT == 1) printf("SD CARD Free Space: \t%lu\n",free_space);
+#if DEBUG_PRINT == 1
+	printf("SD CARD Free Space: \t%lu\n",free_space);
+#endif
 
 	DIR dirs;
 	char *fn;
@@ -111,11 +120,15 @@ uint8_t init_sd(uint16_t * file_count, uint16_t * log_count){
 
 				if ((fn[0] == 'F') & (fn[1] == 'L'))
 				{
-					if (DEBUG_PRINT == 1) printf("found flight log: %s \n",fn);
+#if DEBUG_PRINT == 1
+					printf("found flight log: %s \n",fn);
+#endif
 					cnt1 ++;
 				} else if ((fn[0] == 'L') & (fn[1] == 'O'))
 				{
-					if (DEBUG_PRINT == 1) printf("found log file: %s \n",fn);
+#if DEBUG_PRINT == 1
+					printf("found log file: %s \n",fn);
+#endif
 					cnt2 ++;
 				}
 
@@ -123,8 +136,10 @@ uint8_t init_sd(uint16_t * file_count, uint16_t * log_count){
 	}
 	*file_count = cnt1;
 	*log_count = cnt2;
-	if (DEBUG_PRINT == 1) printf("\n this is the %hu th flight. \n", *file_count);
-	if (DEBUG_PRINT == 1) printf("\n this is the %hu th log file. \n", *log_count);
+#if DEBUG_PRINT == 1
+	printf("\n this is the %hu th flight. \n", *file_count);
+	printf("\n this is the %hu th log file. \n", *log_count);
+#endif
 	return 1;
 }
 
@@ -138,7 +153,9 @@ uint8_t init_file(char * FILE_NAME, char * LOG_NAME){
 	fresult = f_open(&data_file, FILE_NAME, FA_CREATE_ALWAYS | FA_WRITE );
 
 	if (fresult != FR_OK){
-		if (DEBUG_PRINT == 1) printf("trying to open datalog file, error-code: %d \n",fresult);
+#if DEBUG_PRINT == 1
+		printf("trying to open datalog file, error-code: %d \n",fresult);
+#endif
 		return 0;
 	}
 	/* Writing text */
@@ -150,7 +167,9 @@ uint8_t init_file(char * FILE_NAME, char * LOG_NAME){
 	f_close(&data_file);
 
 	if (fresult != FR_OK){
-		if (DEBUG_PRINT == 1) printf ("FLIGHT FILE not created, error-code: %d \n",fresult);
+#if DEBUG_PRINT == 1
+		printf ("FLIGHT FILE not created, error-code: %d \n",fresult);
+#endif
 		return 0;
 	}
 	//bufclear();
@@ -161,7 +180,10 @@ uint8_t init_file(char * FILE_NAME, char * LOG_NAME){
 	fresult = f_open(&log_file, LOG_NAME, FA_CREATE_NEW | FA_WRITE );
 
 	if (fresult != FR_OK){
-		if (DEBUG_PRINT == 1) printf("trying to open setuplog file, error-code: %d \n",fresult);
+
+#if DEBUG_PRINT == 1
+		printf("trying to open setuplog file, error-code: %d \n",fresult);
+#endif
 		return 0;
 	}
 
@@ -182,7 +204,9 @@ uint8_t init_file(char * FILE_NAME, char * LOG_NAME){
 	fresult = f_write(&log_file, myLog, sizeof(myLog), &bw);
 
 	if (fresult != FR_OK){
-		if (DEBUG_PRINT == 1) printf ("LOG FILE not created, error-code: %d \n",fresult);
+#if DEBUG_PRINT == 1
+		printf ("LOG FILE not created, error-code: %d \n",fresult);
+#endif
 		return 0;
 	}
 
@@ -213,17 +237,22 @@ float extract_from_str(char* buffer, uint8_t *start, uint8_t *end){
 }
 
 void read_from_SD(char * FILE_NAME, float * TIME, float * P1, float * P2, float * Ax1, float * Ay1, float * Az1, float * Ax2, float * Ay2, float * Az2){
-
+#if DEBUG_PRINT == 1
 	printf("reading FF file: \n");
+#endif
 	fresult = f_open(&fake_file, FILE_NAME, FA_READ);
+#if DEBUG_PRINT == 1
 	printf("trying to read the file, error-code: %d \n",fresult);
+#endif
 
 	char buffer[FAKE_LINE_LEN];
 	uint8_t x = 0;
 	uint8_t y = 0;
 	for (int i = 1; i < FAKE_FILE_LEN; i++){
 	        f_gets(buffer, f_size(&fake_file), &fake_file);
+#if DEBUG_PRINT == 1
 	        printf("reading line: %d  \n",i);
+#endif
 	        x = 0;
 	        y = 0;
 
@@ -301,24 +330,31 @@ void write_to_SD(char * FILE_NAME, char * buffer){
 
 	if (fresult == FR_OK)
 	{
-
-		if (DEBUG_PRINT == 1) printf("opened file \n");
+#if DEBUG_PRINT == 1
+		printf("opened file \n");
+#endif
 
 	} else {
-
-		if (DEBUG_PRINT == 1) printf("error opening file for writing\n");
-		if (DEBUG_PRINT == 1) printf("error: %d\n",fresult);
+#if DEBUG_PRINT == 1
+		printf("error opening file for writing\n");
+		printf("error: %d\n",fresult);
+#endif
 
 		fresult = f_mount(NULL, SDPath, 1);
+#if DEBUG_PRINT == 1
 		if (fresult == FR_OK) printf ("SD CARD UNMOUNTED successfully...\n");
-
+#endif
 		FRESULT ret = f_mount(&fs, SDPath, 1);
 		if (ret == FR_OK)
 		{
-			if (DEBUG_PRINT == 1) printf("mounted SD card\n");
+#if DEBUG_PRINT == 1
+			printf("mounted SD card\n");
+#endif
 		} else {
-			if (DEBUG_PRINT == 1) printf("no SD connection established\n");
-			if (DEBUG_PRINT == 1) printf("error: %d\n",ret);
+#if DEBUG_PRINT == 1
+			printf("no SD connection established\n");
+			printf("error: %d\n",ret);
+#endif
 		}
 	}
 
@@ -349,24 +385,31 @@ void log_to_SD(char * FILE_NAME, char * buffer){
 
 	if (fresult == FR_OK)
 	{
-
-		if (DEBUG_PRINT == 1) printf("opened file \n");
+#if DEBUG_PRINT == 1
+		printf("opened file \n");
+#endif
 
 	} else {
-
-		if (DEBUG_PRINT == 1) printf("error opening log file for writing\n");
-		if (DEBUG_PRINT == 1) printf("error: %d\n",fresult);
+#if DEBUG_PRINT == 1
+		printf("error opening log file for writing\n");
+		printf("error: %d\n",fresult);
+#endif
 
 		fresult = f_mount(NULL, SDPath, 1);
+#if DEBUG_PRINT == 1
 		if (fresult == FR_OK) printf ("SD CARD UNMOUNTED successfully...\n");
-
+#endif
 		FRESULT ret = f_mount(&fs, SDPath, 1);
 		if (ret == FR_OK)
 		{
-			if (DEBUG_PRINT == 1) printf("mounted SD card\n");
+#if DEBUG_PRINT == 1
+			printf("mounted SD card\n");
+#endif
 		} else {
-			if (DEBUG_PRINT == 1) printf("no SD connection established\n");
-			if (DEBUG_PRINT == 1) printf("error: %d\n",ret);
+#if DEBUG_PRINT == 1
+			printf("no SD connection established\n");
+			printf("error: %d\n",ret);
+#endif
 		}
 	}
 

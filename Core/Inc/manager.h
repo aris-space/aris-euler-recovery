@@ -16,7 +16,7 @@
 #define IMU 0
 #define ACC 0
 #define ADC_INT 20
-#define LOG_INT 0
+#define LOG_INT 1000/STATE_ESTIMATION_FREQUENCY
 
 // interval of state estimation call
 #define STATE_EST_INT 1000/STATE_ESTIMATION_FREQUENCY

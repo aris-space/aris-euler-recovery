@@ -1,7 +1,7 @@
 selftest.c:17:9:p_sanity_check	16	static
 selftest.c:26:9:t_sanity_check	16	static
 selftest.c:35:9:a_sanity_check	16	static
-selftest.c:44:9:state_est_sanity_check	32	static
+selftest.c:44:9:state_est_sanity_check	24	static
 selftest.c:64:9:config_baro	88	static
 selftest.c:155:9:config_imu	120	static
 selftest.c:209:9:selftest	32	static
