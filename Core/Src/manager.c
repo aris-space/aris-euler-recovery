@@ -117,8 +117,6 @@ state_est_state_t state_est_state = { 0 };
 
 uint8_t CHECK_FLAG = 0;
 
-uint32_t TD_fired = 0;
-
 float TIME[FAKE_FILE_LEN];
 float P1[FAKE_FILE_LEN];
 float P2[FAKE_FILE_LEN];
@@ -551,16 +549,15 @@ void scheduler (){
 			break;
 		case MAIN_DESCENT:
 			// second event
-			if (TD_fired == 0){
-				fire_TDs(&armed);
-				TD_fired = tick;
-				event = TENDER;
-			}
+			fire_HAWKs(&armed);
+			fire_TDs(&armed);
+			event = TENDER;
 			break;
 		case TOUCHDOWN:
 			if ((fail_safe_timer.active == 0) && (fail_safe_timer_main.active == 0)){
 				fire_HAWKs(&armed);
 				fire_TDs(&armed);
+				event = TENDER;
 				play(440,100);
 				play(659.25,100);
 				play(880,200);

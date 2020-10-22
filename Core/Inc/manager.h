@@ -25,7 +25,7 @@
 #define BARO_TASK_INIT() \
   { \
 	.last_call = 0, \
-	.stage = 0, \
+	.stage = MS_TEMPERATURE_REQ, \
 	.interval = BARO, \
   }
 
