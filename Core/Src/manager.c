@@ -226,7 +226,7 @@ void schedulerinit () {
 	sprintf(buffer, "%ld, SCHEDULER INIT OK, - \n", HAL_GetTick());
 	log_to_SD(LOG_NAME, buffer);
 
-	//seven_nation_army();
+	seven_nation_army();
 	//take_on_me();
 	//take_on_me();
 
